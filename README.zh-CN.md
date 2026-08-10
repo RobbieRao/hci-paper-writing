@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/hci-paper-coach-hero.png" alt="HCI Paper Coach — 让贡献无可置疑" width="100%">
+  <img src="assets/hci-paper-coach-hero.png" alt="HCI Paper Coach：投稿前找到论证薄弱处" width="100%">
 </p>
 
 <p align="center">
@@ -15,29 +15,28 @@
 </p>
 
 <p align="center">
-  <strong>别再润色句子了——先确认论文的论证没有坏。</strong><br>
-  一个面向 HCI 论文的开源 Agent Skill：诊断 contribution、追踪 claim 与
-  evidence，并在真正的 reviewer 之前对稿件进行 red-team。
+  <strong>投稿前，先找到论证最薄弱的地方。</strong><br>
+  一个面向 HCI 论文的开源 Agent Skill。它梳理 contribution 与 evidence，
+  再以 HCI reviewer 的视角检查稿件。
 </p>
 
 ---
 
-大多数学术写作工具优化的是语言。**HCI Paper Coach 检查的是 reviewer
-真正需要相信的东西：这篇论文是否提出了清晰的 HCI contribution，以及它
-是否由正确类型的证据支撑。**
+很多学术写作工具从语言润色开始。HCI Paper Coach 先看论文的论证：作者提出了
+什么 HCI contribution，证据是否足以支持它，reviewer 可能在哪里失去信心。
 
 项目面向准备投稿 **CHI、CSCW、DIS、UIST、TOCHI 及相关 HCI venue** 的作者。
-它知道定性研究、interaction technique、field deployment 与
-Research through Design 不能被同一套通用 rubric 粗暴评价。
+定性研究、interaction technique、field deployment 和 Research through
+Design 各有自己的评价标准，因此 Skill 会选择相应的 review lens。
 
 > [!IMPORTANT]
-> 这是作者侧的诊断与修改工具，不是中稿预测器、引用生成器，也不能替代研究者的判断。
+> 这是作者侧的诊断与修改工具。它不预测中稿、不生成引用，也不能替代研究者的判断。
 
 > [!NOTE]
-> 我们正在开发近五年 CHI 论文 embedding 分析，以及经权利确认的接收/拒稿投稿、
+> 我们正在准备近五年 CHI 论文 embedding 分析，以及经权利确认的接收/拒稿投稿、
 > reviews 与 rebuttals 数据集。[Benchmark 贡献者将获得私测优先邀请。](#hci-paper-coach-benchmark正在开发)
 
-## 三个真正有用的核心工作流
+## 三个核心工作流
 
 | 工作流 | 它做什么 | 你会得到什么 |
 |---|---|---|
@@ -45,8 +44,8 @@ Research through Design 不能被同一套通用 rubric 粗暴评价。
 | **`hci-red-team`** | 分别从贡献、方法、读者/venue 三个视角攻击论文 | 合并去重后的 major risks、champion sentence、killer concern |
 | **`hci-revision`** | 把诊断或 reviewer feedback 转换为有顺序的修改任务 | 带证据需求与验证方式的 revision ledger |
 
-此外还包括：论文规划、章节修改、用户研究报告、interaction figure、
-LLM-integrated system、隐私边界，以及投稿政策的实时核验。
+同一个 Skill 也支持论文规划、章节修改、用户研究报告、interaction figure、
+LLM-integrated system、隐私检查和投稿政策核验。
 
 ## 30 秒安装
 
@@ -84,7 +83,7 @@ Use $hci-paper-writing in hci-diagnose mode on my abstract and contributions.
 
 ## 本地 manuscript preflight
 
-在语义审稿前，先运行一次确定性扫描：
+在语义审稿前运行本地确定性扫描：
 
 ```bash
 python3 skills/hci-paper-writing/scripts/manuscript_audit.py paper.tex
@@ -98,8 +97,8 @@ python3 skills/hci-paper-writing/scripts/manuscript_audit.py paper.tex
 - 常见的 study、ethics 与 limitations 标记；
 - `TODO`、`TBD`、`FIXME` 等未完成内容。
 
-扫描器只使用 Python 标准库，**本地运行、只读、零网络请求**。它输出的是
-review leads，而不是假装精确的“论文质量分数”。
+扫描器只使用 Python 标准库，**本地运行、只读、零网络请求**。它只报告值得
+进一步检查的位置，不给论文打质量分。
 
 <details>
 <summary><strong>查看 preflight 示例</strong></summary>
@@ -123,42 +122,40 @@ review leads，而不是假装精确的“论文质量分数”。
 任何真实参与者或伦理审批信息。
 </details>
 
-## 它为什么不一样
+## 它怎么工作
 
 ### Contribution 优先，语言润色靠后
 
-Skill 不会把“我们进行了一项用户研究”当成 contribution。它会继续追问：
-这项研究揭示、验证、实现或改变了什么 HCI 知识？
+“我们进行了一项用户研究”描述的是研究活动。Skill 会继续追问这项研究揭示、
+验证、实现或改变了什么 HCI 知识，再判断它是否构成 contribution。
 
-### 理解方法传统，而不是迷信某一种方法
+### 按研究传统选择 method lens
 
-它会在 qualitative、quantitative、design research、systems、field/CSCW
-与 mixed methods 之间选择适合的 lens，不会因为 controlled experiment 熟悉，
-就要求所有 HCI 论文都去做实验。
+Qualitative、quantitative、design research、systems、field/CSCW 和 mixed
+methods 论文需要不同的评价标准。Skill 会选择适合稿件的 lens，不会默认要求实验。
 
-### 先要证据，再给自信
+### 让每条批评都能回到稿件
 
-每一条主要批评都必须指出 manuscript evidence、解释为什么重要，并给出
-最低限度可执行的修复方案。每个强 claim 都必须对应 evidence、citation，
-或者更克制的措辞。
+每条主要批评都要指出 manuscript evidence，说明问题会影响什么，并给出可执行的
+修复方案。强 claim 需要 evidence、citation，或者更克制的措辞。
 
-### Corpus-grounded，但不演 benchmark 戏
+### 语料比较要保留 provenance
 
-新的 `hci-grounded` 协议可以把 manuscript 与一个明确声明的论文语料库进行比较，
-并记录 corpus、年份、query、filters、覆盖缺口和实际查看过的来源。Embedding
-可以帮助检索相近论文，但不能证明 novelty、quality 或中稿可能性。
+使用明确声明的 corpus 比较 manuscript 时，`hci-grounded` 协议会记录 corpus、
+年份、query、filters、覆盖缺口和实际查看过的来源。Embedding 可以检索相近论文，
+但仅凭相似度不能判断 novelty、quality 或中稿可能性。
 
-### 查当前政策，不背过期规则
+### 实时核验投稿政策
 
 Venue 规则会变化。Skill 要求 agent 在运行时从官方页面核验 deadline、length、
 anonymization、accessibility、ethics、AI-use disclosure 与 supplementary
 material，而不是相信缓存记忆。
 
-### 把隐私边界说清楚
+### 说明隐私边界
 
-本地 scanner 不会把 manuscript 发到任何地方。Skill 也会提醒用户：模型侧数据
-如何处理，由运行 Skill 的平台决定，而不是由这个 GitHub 仓库决定。未经明确授权，
-不要把你正在审阅的 confidential submission 上传给第三方模型。
+本地 scanner 不会发送 manuscript。语义审稿时的数据处理方式取决于运行 Skill
+的 AI 平台，不由这个 GitHub 仓库控制。未经明确授权，不要把正在审阅的
+confidential submission 上传给第三方模型。
 
 ## 仓库结构
 
@@ -184,12 +181,11 @@ skills/hci-paper-writing/
 
 ## 设计原则
 
-1. **作者保留判断权。** Agent 负责搭建批评结构，不替研究者决定论文应该声称什么。
-2. **不伪造权威。** 不虚构引用、参与者、统计数据、政策或 reviewer 共识。
-3. **拒绝 acceptance theater。** 分开判断 research strength 与 venue fit，
-   不生成虚假的中稿概率。
-4. **尊重 HCI 的认识论多样性。** 在论文所属的研究传统内部评价 rigor。
-5. **不能行动的建议就不输出。** 反馈必须包含证据、严重度、修复方案与验证方式。
+1. 作者保留判断权。Agent 组织批评，但不替研究者决定论文应该声称什么。
+2. Skill 不虚构引用、参与者、统计数据、政策或 reviewer 共识。
+3. Research strength 与 venue fit 分开报告，Skill 不生成中稿概率。
+4. Rigor 按论文所属的研究传统评价。
+5. 每条反馈都包含证据、严重度、修复方案与验证方式。
 
 ## Roadmap
 
@@ -206,37 +202,36 @@ skills/hci-paper-writing/
 - [ ] CSCW、DIS、UIST、accessibility 与 health HCI 专项包
 - [ ] Reviewer-feedback 对比与 revision tracking
 
-## HCI Paper Coach Benchmark——正在开发
+<a id="hci-paper-coach-benchmark正在开发"></a>
 
-我们正在构建一套开放、可复现、理解 HCI 方法传统的论文反馈评测集。计划中的
-首个版本会刻意分成三个层次：
+## Benchmark 正在开发
 
-1. **近五年 CHI 论文分析。** 使用 embedding 辅助梳理近期 CHI 论文的
-   contribution、method、topic 与 subcommunity；公开准确覆盖范围、检索参数、
-   来源链接和已知缺口。只有在许可允许时才会索引或再分发全文。
-2. **接收与拒稿的完整投稿历程。** 在作者贡献、权利确认、必要匿名化，并且符合
-   venue policy 的前提下，收录 manuscript、reviews、rebuttal、decision 与
-   revision history。
-3. **可验证的 evaluation cases。** 用合成稿和专家标注案例评测 contribution
-   diagnosis、claim-evidence alignment、method fit、reviewer-risk recovery、
-   建议的可执行性以及 false-positive control。
+我们正在准备一套开放、可复现、按 HCI 方法传统评价论文反馈的 benchmark。
+首版会把三类数据分开报告：
 
-这个数据集**尚未发布**；当前 Skill 也不会声称自己已经用 CHI 私密 reviews
-训练或验证。把“正在建设”和“已经拥有”分开，是我们可信度的一部分。
+1. 近五年 CHI 论文语料，用于 embedding 辅助的 contribution、method、topic
+   与 subcommunity 分析。发布时会说明准确的覆盖范围、检索参数、来源链接和已知
+   缺口。只有在许可允许时才会索引或再分发全文。
+2. 作者贡献的接收与拒稿历程。数据可包含 manuscript、reviews、rebuttal、
+   decision 与 revision history。每份材料必须完成权利确认、符合适用 venue
+   policy，并按需匿名化。
+3. 合成稿与专家标注案例，用于评测 contribution diagnosis、claim-evidence
+   alignment、method fit、reviewer-risk recovery、建议的可执行性和 false positives。
 
-欢迎贡献 synthetic failure case、annotation protocol、检索或评测代码、公开
-metadata source，或者你有权授权的投稿历程。Benchmark 贡献者会获得私测优先
-邀请，具体安排取决于名额以及数据与 consent 审核。请先阅读
-[CONTRIBUTING.md](CONTRIBUTING.md)，并且**不要在公开 issue 中附上任何机密材料**。
+这个 benchmark **尚未发布**。当前 Skill 没有使用 CHI 私密 reviews 训练或验证。
+
+可以贡献 synthetic failure case、annotation protocol、检索或评测代码、公开
+metadata source，或者经过授权的投稿历程。贡献者会获得私测优先邀请，具体安排
+取决于名额以及数据与 consent 审核。参与前请阅读
+[CONTRIBUTING.md](CONTRIBUTING.md)。不要在公开 issue 中附上机密材料。
 
 ## 参与贡献
 
-最有价值的贡献不是再加一段泛泛的提示词，而是提交一个**方法特定的失败案例**、
-一篇**可公开的合成测试稿**，或者一个**当前官方政策来源**。请阅读
-[CONTRIBUTING.md](CONTRIBUTING.md)。
+目前最需要的是方法特定的失败案例、可公开的合成测试稿，以及当前官方政策来源。
+参与方式见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
-如果它帮你提前发现了一个本来会进入 review 的致命问题，欢迎给仓库一个 Star。
-这会让更多 HCI 研究者找到一个真正检查论证、而不只是检查语法的工具。
+如果项目帮你在 review 前发现了严重问题，可以给仓库一个 Star，方便其他 HCI
+研究者找到它。
 
 ## 负责任地使用
 

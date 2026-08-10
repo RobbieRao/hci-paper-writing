@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/hci-paper-coach-hero.png" alt="HCI Paper Coach — Make the contribution undeniable" width="100%">
+  <img src="assets/hci-paper-coach-hero.png" alt="HCI Paper Coach: find the weak link before submission" width="100%">
 </p>
 
 <p align="center">
@@ -15,32 +15,32 @@
 </p>
 
 <p align="center">
-  <strong>Stop polishing sentences while the argument is still broken.</strong><br>
-  An open-source agent skill that diagnoses HCI contributions, traces claims to
-  evidence, and red-teams manuscripts before reviewers do.
+  <strong>Find the weak link before submission.</strong><br>
+  An open-source agent skill that maps an HCI paper's contribution to its
+  evidence, then reads the draft as a skeptical reviewer might.
 </p>
 
 ---
 
-Most academic writing tools optimize prose. **HCI Paper Coach audits the thing
-reviewers actually have to believe:** that the paper makes a clear HCI
-contribution and supports it with the right kind of evidence.
+Most academic writing tools start with the prose. HCI Paper Coach starts with the
+argument: what the paper claims, what evidence supports it, and where a reviewer
+may lose confidence.
 
-It is built for authors working toward **CHI, CSCW, DIS, UIST, TOCHI, and
-adjacent HCI venues**. It understands that a qualitative inquiry, an interaction
-technique, a field deployment, and a research-through-design paper should not be
-judged with one generic rubric.
+The skill is intended for authors submitting to **CHI, CSCW, DIS, UIST, TOCHI,
+and related HCI venues**. It uses different review lenses for qualitative
+inquiry, interaction techniques, field deployments, research through design,
+and other HCI traditions.
 
 > [!IMPORTANT]
-> This is an author-side reasoning and revision tool—not an acceptance predictor,
-> citation generator, or substitute for research judgment.
+> This is an author-side reasoning and revision tool. It does not predict
+> acceptance, generate citations, or replace research judgment.
 
 > [!NOTE]
-> We are building a five-year CHI embedding analysis and a rights-cleared dataset
+> We are working on a five-year CHI embedding analysis and a rights-cleared dataset
 > of accepted/rejected submission journeys, reviews, and rebuttals.
-> [Benchmark contributors get priority private-beta invitations.](#hci-paper-coach-benchmark--in-active-development)
+> [Benchmark contributors get priority invitations to the private beta.](#hci-paper-coach-benchmark--in-active-development)
 
-## Three workflows that earn their place in your repo
+## Three core workflows
 
 | Workflow | What it does | What you get |
 |---|---|---|
@@ -48,8 +48,9 @@ judged with one generic rubric.
 | **`hci-red-team`** | Reviews through contribution, method, and reader/venue lenses | Consolidated major risks, champion sentence, killer concern |
 | **`hci-revision`** | Turns reviews or diagnosis into ordered work | Revision ledger with evidence needs and verification tests |
 
-Also included: planning, section revision, study reporting, interaction-figure
-guidance, LLM-system reporting, privacy guardrails, and live venue-policy checks.
+The same skill also handles paper planning, section revision, study reporting,
+interaction figures, LLM-system reporting, privacy checks, and current venue
+policies.
 
 ## 30-second install
 
@@ -87,7 +88,7 @@ Separate contribution, method, and reader/venue risks.
 
 ## Local manuscript preflight
 
-Before semantic review, run a deterministic scan:
+Run the deterministic local scanner before semantic review:
 
 ```bash
 python3 skills/hci-paper-writing/scripts/manuscript_audit.py paper.tex
@@ -101,8 +102,9 @@ It detects:
 - common study, ethics, and limitations markers;
 - unfinished text such as `TODO`, `TBD`, and `FIXME`.
 
-The scanner is Python-standard-library only, read-only, and makes **zero network
-requests**. It produces review leads—not fake quality scores.
+The scanner uses only the Python standard library. It is read-only and makes
+**zero network requests**. Its output is a set of review leads, not a paper
+quality score.
 
 <details>
 <summary><strong>See an example preflight</strong></summary>
@@ -125,44 +127,45 @@ requests**. It produces review leads—not fake quality scores.
 Try it on the intentionally synthetic [example paper](examples/synthetic-paper.md).
 </details>
 
-## Why this is different
+## How it works
 
 ### Contribution first, prose second
 
-The skill refuses to treat “we conducted a user study” as a contribution. It
-asks what the study reveals, validates, enables, or changes for HCI.
+"We conducted a user study" describes an activity. The skill asks what the study
+reveals, validates, enables, or changes for HCI before treating it as a
+contribution.
 
-### Method-aware, not method-dogmatic
+### Match the method lens to the paper
 
-It selects among qualitative, quantitative, design-research, systems,
-field/CSCW, and mixed-method lenses. It does not demand an experiment merely
-because an experiment is familiar.
+Qualitative, quantitative, design-research, systems, field/CSCW, and mixed-method
+papers call for different standards. The skill selects the lens that fits the
+paper instead of defaulting to an experiment.
 
-### Evidence before confidence
+### Trace criticism back to evidence
 
-Every major criticism must point to manuscript evidence, explain why it matters,
-and propose a minimum credible repair. Every strong author claim must map to
-evidence, a citation, or narrower wording.
+Each major criticism must identify its basis in the manuscript, explain the
+consequence, and suggest a credible repair. Strong author claims need evidence,
+a citation, or narrower wording.
 
-### Corpus-grounded, without benchmark theater
+### Keep corpus comparisons traceable
 
-The new `hci-grounded` protocol can compare a manuscript with a declared paper
-corpus while preserving provenance. It records the corpus, years, query, filters,
-coverage gaps, and sources inspected. Embeddings may retrieve nearby work; they
-do not prove novelty, quality, or likely acceptance.
+When comparing a manuscript with a declared corpus, the `hci-grounded` protocol
+records the corpus, years, query, filters, coverage gaps, and inspected sources.
+Embeddings can retrieve nearby work, but similarity alone does not establish
+novelty, quality, or likely acceptance.
 
-### Current policy, not cached folklore
+### Check current venue policy
 
 Venue rules change. The skill requires agents to verify deadlines, length,
 anonymization, accessibility, ethics, AI-use disclosure, and supplementary
 material rules from current official sources at run time.
 
-### Privacy that is stated, not implied
+### State the privacy boundary
 
-The local scanner never sends a manuscript anywhere. The skill also reminds
-users that the surrounding AI platform—not this repository—controls model-side
-data handling. Never upload a confidential paper you are reviewing without
-explicit authorization and policy support.
+The local scanner never sends a manuscript anywhere. Data handling for semantic
+review depends on the AI platform running the skill, not this repository. Do not
+upload a confidential paper you are reviewing without explicit authorization
+and policy support.
 
 ## What's inside
 
@@ -188,16 +191,15 @@ skills/hci-paper-writing/
 
 ## Design principles
 
-1. **Author retains judgment.** The agent scaffolds critique; it does not decide
-   what the research should claim.
-2. **No fabricated authority.** No invented citations, participants, policies,
-   statistics, or reviewer consensus.
-3. **No acceptance theater.** Research strength and venue fit are separated; no
-   numerical acceptance probability is invented.
-4. **Epistemic pluralism.** Rigor is evaluated within the paper's research
-   tradition.
-5. **Actionable or omitted.** Feedback needs evidence, severity, repair, and a
-   verification step.
+1. The author retains judgment. The agent structures the critique but does not
+   decide what the research should claim.
+2. The skill does not invent citations, participants, policies, statistics, or
+   reviewer consensus.
+3. Research strength and venue fit are reported separately. The skill does not
+   assign an acceptance probability.
+4. Rigor is evaluated within the paper's research tradition.
+5. Feedback includes its evidence, severity, proposed repair, and a way to check
+   the revision.
 
 ## Roadmap
 
@@ -214,42 +216,43 @@ skills/hci-paper-writing/
 - [ ] Bilingual Chinese/English report templates
 - [ ] Reviewer-feedback comparison and revision tracking
 
-## HCI Paper Coach Benchmark — in active development
+<a id="hci-paper-coach-benchmark--in-active-development"></a>
 
-We are building an open, reproducible benchmark for method-aware HCI paper
-feedback. The planned first release has three deliberately separate layers:
+## HCI Paper Coach Benchmark: in progress
 
-1. **Five years of CHI paper analysis.** Embedding-assisted mapping of recent CHI
-   papers by contribution, method, topic, and subcommunity. We will publish exact
-   coverage, retrieval settings, source links, and known gaps. Full text will be
-   indexed or redistributed only where licensing permits.
-2. **Accepted and rejected submission journeys.** Author-contributed,
-   rights-cleared and appropriately de-identified manuscripts paired with
-   reviews, rebuttals, decisions, and revision histories where permission and
-   venue policy allow.
-3. **Evaluation cases.** Synthetic and expert-annotated challenges for
-   contribution diagnosis, claim-evidence alignment, method fit, reviewer-risk
-   recovery, actionability, and false-positive control.
+We are preparing an open, reproducible benchmark for method-aware HCI paper
+feedback. The first release will report three data sources separately:
 
-This dataset is **not released yet**, and the current skill does not claim to be
-trained or validated on private CHI reviews. That distinction matters.
+1. A five-year CHI corpus for embedding-assisted analysis by contribution,
+   method, topic, and subcommunity. The release will document exact coverage,
+   retrieval settings, source links, and known gaps. We will index or redistribute
+   full text only when the license permits it.
+2. Accepted and rejected submission histories contributed by authors. A history
+   may include the manuscript, reviews, rebuttal, decision, and revisions. Each
+   artifact must be cleared for use, allowed by the applicable venue policy, and
+   de-identified where necessary.
+3. Synthetic and expert-annotated cases for evaluating contribution diagnosis,
+   claim-evidence alignment, method fit, reviewer-risk recovery, actionability,
+   and false positives.
 
-Want to help build the benchmark? Contribute a synthetic failure case, annotation
-protocol, retrieval/evaluation code, public metadata source, or an authorized
-submission journey. Benchmark contributors will receive priority invitations to
-the private beta, subject to capacity and data/consent checks. Start with
-[CONTRIBUTING.md](CONTRIBUTING.md)—never attach confidential material to a public
-issue.
+The benchmark has **not been released**. The current skill has not been trained
+or validated on private CHI reviews.
+
+Contributions can include synthetic failure cases, annotation protocols,
+retrieval or evaluation code, public metadata sources, and authorized submission
+histories. Contributors will receive priority invitations to the private beta,
+subject to capacity and data/consent checks. See
+[CONTRIBUTING.md](CONTRIBUTING.md). Do not attach confidential material to a
+public issue.
 
 ## Contributing
 
-The fastest way to improve this project is to contribute a **method-specific
-failure case**, a **synthetic test manuscript**, or a **public official policy
-source**. See [CONTRIBUTING.md](CONTRIBUTING.md).
+Useful contributions include method-specific failure cases, synthetic test
+manuscripts, and current official policy sources. See
+[CONTRIBUTING.md](CONTRIBUTING.md).
 
-If this saves you one avoidable review cycle, consider starring the repo. It
-helps other HCI researchers find a tool that critiques the argument—not just the
-grammar.
+If the project helps you catch a serious problem before review, consider starring
+the repository so other HCI researchers can find it.
 
 ## Responsible use
 
