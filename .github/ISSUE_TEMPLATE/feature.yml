@@ -1,0 +1,41 @@
+name: Method lens or feature
+description: Propose a reproducible improvement to HCI Paper Coach
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: failure
+    attributes:
+      label: Failure case
+      description: What author task or manuscript pattern does the current skill mishandle?
+    validations:
+      required: true
+  - type: dropdown
+    id: tradition
+    attributes:
+      label: Research tradition
+      options:
+        - Qualitative inquiry
+        - Quantitative or experimental
+        - Design research / RtD
+        - Systems / interaction technique
+        - Field / CSCW
+        - Mixed methods
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: Describe an actionable output or test that would demonstrate the improvement.
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy check
+      options:
+        - label: I have not included confidential manuscript or review text.
+          required: true
+

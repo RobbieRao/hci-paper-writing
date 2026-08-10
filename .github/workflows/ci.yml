@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate skill package
+        run: make validate
+      - name: Run tests
+        run: make test
+      - name: Run synthetic manuscript preflight
+        run: python3 skills/hci-paper-writing/scripts/manuscript_audit.py examples/synthetic-paper.md --format json
+

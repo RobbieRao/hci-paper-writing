@@ -1,0 +1,5 @@
+interface:
+  display_name: "HCI Paper Coach"
+  short_description: "Diagnose and red-team HCI papers"
+  default_prompt: "Use $hci-paper-writing to diagnose my HCI paper's contribution, evidence chain, and reviewer risks."
+

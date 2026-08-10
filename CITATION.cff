@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "If HCI Paper Coach supports your research workflow, cite this software."
+title: "HCI Paper Coach"
+type: software
+authors:
+  - family-names: "Rao"
+    given-names: "Robbie"
+repository-code: "https://github.com/RobbieRao/hci-paper-writing"
+url: "https://github.com/RobbieRao/hci-paper-writing"
+license: MIT
+version: 0.1.0
+date-released: 2026-08-10
+
