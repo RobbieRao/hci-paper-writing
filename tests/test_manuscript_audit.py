@@ -6,7 +6,13 @@ import unittest
 SCRIPT_DIR = Path(__file__).resolve().parents[1] / "skills" / "hci-paper-writing" / "scripts"
 sys.path.insert(0, str(SCRIPT_DIR))
 
-from manuscript_audit import analyze, extract_sections, markdown_report  # noqa: E402
+from manuscript_audit import (  # noqa: E402
+    analyze,
+    extract_float_integrity,
+    extract_section_blocks,
+    extract_sections,
+    markdown_report,
+)
 
 
 SAMPLE = """# Abstract
@@ -49,6 +55,30 @@ class ManuscriptAuditTests(unittest.TestCase):
         report = markdown_report(Path("sample.md"), analyze(SAMPLE, ".md"))
         self.assertIn("# Local Manuscript Preflight", report)
         self.assertIn("local read-only scan", report)
+        self.assertIn("## Reverse Outline", report)
+
+    def test_reverse_outline_captures_opening_move(self) -> None:
+        outline = extract_section_blocks(SAMPLE, ".md")
+        self.assertEqual(outline[1]["section"], "Introduction")
+        self.assertTrue(outline[1]["opening_move"].startswith("RQ1"))
+
+    def test_latex_float_integrity(self) -> None:
+        latex = r"""
+\section{Results}
+See \autoref{fig:system} and \ref{tab:missing}.
+\begin{figure}
+\caption{System overview}
+\label{fig:system}
+\end{figure}
+\begin{table}
+\caption{Conditions}
+\label{tab:unused}
+\end{table}
+"""
+        integrity = extract_float_integrity(latex, ".tex")
+        self.assertEqual(integrity["referenced_labels"], ["fig:system"])
+        self.assertEqual(integrity["unreferenced_labels"], ["tab:unused"])
+        self.assertEqual(integrity["undefined_float_references"], ["tab:missing"])
 
 
 if __name__ == "__main__":

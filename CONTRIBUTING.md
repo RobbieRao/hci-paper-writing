@@ -8,6 +8,8 @@ project's methodological range without collapsing HCI into one review tradition.
 - a synthetic manuscript that exposes a real failure mode;
 - a method-lens correction grounded in public methodological guidance;
 - a deterministic check with unit tests;
+- a synthetic reviewer-panel or rebuttal case with stable concern IDs;
+- a figure/text, terminology, or numeric-consistency fixture;
 - a current official venue-policy source;
 - an accessibility or privacy improvement;
 - a clearer output contract or reproducible example.
@@ -50,6 +52,12 @@ make validate
 make test
 ```
 
+To exercise the safe workspace initializer without writing files:
+
+```bash
+python3 skills/hci-paper-writing/scripts/project_workspace.py . --dry-run
+```
+
 Keep the core `SKILL.md` concise. Put method-specific knowledge in a directly
 linked file under `references/`. Scripts must use deterministic behavior where
 possible and include tests. Avoid claims about acceptance-rate improvement unless
@@ -57,3 +65,8 @@ they are backed by a public, reproducible evaluation.
 
 By contributing, you agree that your contribution is licensed under the MIT
 License of this repository.
+
+If a contribution adapts an external project, name the source and license in the
+pull request. Do not copy from noncommercial or unlicensed projects. Compatible
+open-source inspiration still needs attribution when its expression or code is
+reused.

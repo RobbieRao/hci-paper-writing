@@ -10,6 +10,7 @@
   <a href="https://github.com/RobbieRao/hci-paper-writing/actions/workflows/ci.yml"><img src="https://github.com/RobbieRao/hci-paper-writing/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-34d399.svg" alt="MIT License"></a>
   <a href="skills/hci-paper-writing/SKILL.md"><img src="https://img.shields.io/badge/Agent%20Skill-open%20standard-8b5cf6.svg" alt="Agent Skill"></a>
+  <img src="https://img.shields.io/badge/version-0.2.0-60a5fa.svg" alt="Version 0.2.0">
   <img src="https://img.shields.io/badge/preflight-local%20%26%20read--only-22d3ee.svg" alt="Local and read-only preflight">
   <img src="https://img.shields.io/badge/benchmark-in%20development-f59e0b.svg" alt="Benchmark in development">
 </p>
@@ -17,7 +18,8 @@
 <p align="center">
   <strong>Find the weak link before submission.</strong><br>
   An open-source agent skill that maps an HCI paper's contribution to its
-  evidence, then reads the draft as a skeptical reviewer might.
+  evidence, stress-tests it through HCI-specific reviewer lenses, and keeps the
+  revision trail auditable from first draft to rebuttal.
 </p>
 
 ---
@@ -51,6 +53,18 @@ and other HCI traditions.
 The same skill also handles paper planning, section revision, study reporting,
 interaction figures, LLM-system reporting, privacy checks, and current venue
 policies.
+
+### New in the current open-source release
+
+| Capability | Why it matters |
+|---|---|
+| **Persistent `.hci-paper/` workspace** | Claims, figures, reviewer comments, policy checks, and revision promises survive across sessions |
+| **HCI reviewer panel** | Contribution, method-tradition, and reader/venue lenses are collected before meta-review, with disagreement preserved |
+| **Closed-loop rebuttal ledger** | Every response promise points to a manuscript change and a verification step |
+| **Machine-readable consistency audit** | Reverse outline, RQs, strong claims, unfinished text, and LaTeX figure/table integrity are available as Markdown or JSON |
+
+This is not a grammar wrapper with an HCI prompt pasted on top. The workflow is
+built around HCI's different contribution types and research traditions.
 
 ## 30-second install
 
@@ -86,6 +100,12 @@ Use $hci-paper-writing to red-team this draft for CHI 2027.
 Separate contribution, method, and reader/venue risks.
 ```
 
+For a multi-session paper project:
+
+```text
+Use $hci-paper-writing in hci-init mode for this project, then run hci-panel.
+```
+
 ## Local manuscript preflight
 
 Run the deterministic local scanner before semantic review:
@@ -100,11 +120,16 @@ It detects:
 - explicit RQ and contribution markers;
 - strong constructs such as trust, understanding, agency, and usefulness;
 - common study, ethics, and limitations markers;
+- a reverse outline from each section's opening move;
+- LaTeX figure/table definitions, references, captions, and orphaned labels;
 - unfinished text such as `TODO`, `TBD`, and `FIXME`.
 
 The scanner uses only the Python standard library. It is read-only and makes
 **zero network requests**. Its output is a set of review leads, not a paper
 quality score.
+
+Add `--format json` when you want stable, machine-readable output for an agent
+pipeline or benchmark harness.
 
 <details>
 <summary><strong>See an example preflight</strong></summary>
@@ -126,6 +151,40 @@ quality score.
 
 Try it on the intentionally synthetic [example paper](examples/synthetic-paper.md).
 </details>
+
+## Give each paper a memory
+
+Initialize a local workspace inside an existing paper directory:
+
+```bash
+python3 skills/hci-paper-writing/scripts/project_workspace.py \
+  /path/to/paper --manuscript paper.tex
+```
+
+This creates `.hci-paper/` with a context file and separate ledgers for claims,
+figures, reviewer comments, revisions, and verified venue policies. It also
+creates `runs/` for comparable audit reports. The initializer has no external
+dependencies, makes no network requests, and refuses to overwrite an existing
+workspace.
+
+Use `--dry-run` to inspect the plan first, or `--json` to integrate it into
+another tool.
+
+## From reviewer concern to verified change
+
+`hci-panel` gathers role-separated readings before synthesis. If the platform
+cannot run truly independent reviewers, the skill says so instead of pretending
+that sequential personas are independent evidence.
+
+`hci-rebuttal` then assigns stable IDs to concerns and tracks this chain:
+
+```text
+reviewer concern -> evidence -> response claim -> manuscript change -> verification
+```
+
+The point is not to produce a more confident rebuttal. It is to prevent a good
+response letter from drifting away from the paper the committee will actually
+read.
 
 ## How it works
 
@@ -176,6 +235,7 @@ skills/hci-paper-writing/
 ├── assets/                          # Intake and revision templates
 ├── scripts/
 │   ├── manuscript_audit.py          # Local deterministic preflight
+│   ├── project_workspace.py         # Safe persistent paper-state initializer
 │   └── validate_skill.py            # Zero-dependency package validator
 └── references/
     ├── contribution-types.md
@@ -185,6 +245,9 @@ skills/hci-paper-writing/
     ├── study-evidence.md
     ├── section-patterns.md
     ├── reviewer-checklist.md
+    ├── reviewer-panel.md
+    ├── rebuttal-and-revision.md
+    ├── project-workspace.md
     ├── llm-systems.md
     └── policy-and-privacy.md
 ```
@@ -208,13 +271,17 @@ skills/hci-paper-writing/
 - [x] Local Markdown/LaTeX/text preflight
 - [x] Qualitative, quantitative, design, systems, field, and mixed-method lenses
 - [x] Privacy and live-policy guardrails
+- [x] Persistent per-paper workspace and machine-readable ledgers
+- [x] Reverse outline and LaTeX figure/table consistency checks
+- [x] Role-separated HCI reviewer panel and meta-review protocol
+- [x] Reviewer-comment, rebuttal, revision, and verification loop
 - [ ] HCI Paper Coach Benchmark: five-year CHI embedding analysis
 - [ ] Rights-cleared accepted/rejected submissions, reviews, and rebuttals
 - [ ] Public benchmark release with versioned splits, annotations, and data cards
-- [ ] Structured LaTeX cross-section consistency checks
+- [ ] Numeric and terminology consistency across text, figures, and tables
 - [ ] Subcommunity packs for CSCW, DIS, UIST, accessibility, and health HCI
 - [ ] Bilingual Chinese/English report templates
-- [ ] Reviewer-feedback comparison and revision tracking
+- [ ] Longitudinal reviewer-feedback comparison across manuscript versions
 
 <a id="hci-paper-coach-benchmark--in-active-development"></a>
 
@@ -268,6 +335,7 @@ the repository so other HCI researchers can find it.
 ## License and provenance
 
 MIT licensed. See [LICENSE](LICENSE) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Release history is recorded in [CHANGELOG.md](CHANGELOG.md).
 
 The project is independently authored and informed by public HCI submission
 guidance and open academic-writing workflows. No third-party source code is

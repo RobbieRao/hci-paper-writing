@@ -6,9 +6,10 @@ description: >
   framing, claim-evidence alignment, paper outlines, section revision, user-study
   reporting, qualitative/quantitative/design/systems rigor, interaction figures,
   venue-fit analysis, corpus-grounded comparison, reviewer-risk audits, rebuttal
-  or revision planning, and HCI policy checks. Trigger for aliases such as
+  or revision planning, persistent paper workspaces, cross-section and figure
+  consistency, reviewer-panel synthesis, and HCI policy checks. Trigger for aliases such as
   hci-diagnose, hci-red-team, hci-revision, hci-plan, hci-study, hci-review,
-  hci-grounded, and hci-full.
+  hci-grounded, hci-init, hci-consistency, hci-panel, hci-rebuttal, and hci-full.
 ---
 
 # HCI Paper Writing
@@ -38,6 +39,10 @@ rules, or reviewer consensus.
 | `hci-diagnose`, unclear contribution, early draft | Diagnose | `references/contribution-types.md`, `references/workflows.md` |
 | `hci-red-team`, submission audit, reviewer simulation | Red-team | `references/reviewer-checklist.md`, `references/method-lenses.md` |
 | `hci-revision`, revise after feedback | Revision | `references/workflows.md`, `references/section-patterns.md` |
+| `hci-init`, persistent project state | Workspace | `references/project-workspace.md` |
+| `hci-consistency`, reverse outline, figure/reference audit | Consistency | `references/project-workspace.md`, `references/section-patterns.md` |
+| `hci-panel`, independent review perspectives | Reviewer panel | `references/reviewer-panel.md`, `references/method-lenses.md` |
+| `hci-rebuttal`, author response, R&R, shepherding | Rebuttal | `references/rebuttal-and-revision.md`, `references/project-workspace.md` |
 | `hci-plan`, outline, title, RQs | Planning | `references/contribution-types.md`, `references/workflows.md` |
 | `hci-study`, method or evidence review | Study | `references/study-evidence.md`, `references/method-lenses.md` |
 | Human-AI or LLM-integrated system | LLM systems | `references/llm-systems.md` plus the relevant mode file |
@@ -73,8 +78,18 @@ python3 scripts/manuscript_audit.py path/to/manuscript --format markdown
 ```
 
 Use its output as leads, not verdicts. The script detects structure, strong-claim
-terms, RQ/contribution markers, evidence markers, and unfinished text without
-sending the manuscript anywhere.
+terms, RQ/contribution markers, evidence markers, reverse-outline openings,
+figure/table labels and references, captions or alt text, and unfinished text
+without sending the manuscript anywhere. Use `--format json` for automation.
+
+For work spanning multiple passes, initialize a local state directory:
+
+```bash
+python3 scripts/project_workspace.py /path/to/paper --manuscript paper.tex
+```
+
+Follow `references/project-workspace.md`. Never overwrite an existing workspace
+or treat a stale ledger as evidence about the current manuscript.
 
 ## Core Reasoning Rules
 
@@ -137,6 +152,10 @@ Merge duplicate findings. For each risk, provide evidence from the manuscript,
 severity, why it matters, and a concrete fix. Include a champion sentence and a
 killer concern. Do not invent a numerical acceptance probability.
 
+For `hci-panel`, use `references/reviewer-panel.md`: collect role-separated
+reviews before synthesis, preserve disagreement, and report whether independence
+was real or simulated.
+
 ### Revision
 
 Produce a prioritized ledger:
@@ -146,6 +165,10 @@ Produce a prioritized ledger:
 
 Order work by argument and evidence first, structure second, prose last. Do not
 polish text whose underlying claim is unsupported.
+
+For reviewer feedback or a response letter, follow
+`references/rebuttal-and-revision.md`. Link every response promise to an exact
+manuscript action and verify it before marking the item done.
 
 ## Current Policy Rule
 

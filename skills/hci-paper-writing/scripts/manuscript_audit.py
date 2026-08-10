@@ -51,6 +51,9 @@ CONTRIBUTION_PATTERN = re.compile(
 
 RQ_PATTERN = re.compile(r"\bRQ\s*[-:]?\s*\d+[A-Za-z]?\b|\bresearch questions?\b", re.IGNORECASE)
 TODO_PATTERN = re.compile(r"\b(?:TODO|TBD|FIXME|XXX)\b|\[\?\]|\\todo\b", re.IGNORECASE)
+FLOAT_REF_PATTERN = re.compile(
+    r"\\(?:ref|autoref|cref|Cref)\*?\{([^{}]+)\}", re.IGNORECASE
+)
 
 
 def read_manuscript(path: Path) -> str:
@@ -101,6 +104,82 @@ def extract_sections(raw: str) -> list[str]:
     return sections
 
 
+def extract_section_blocks(raw: str, suffix: str) -> list[dict[str, str]]:
+    """Return a compact reverse outline without trying to parse all Markdown/LaTeX."""
+    if suffix.lower() == ".tex":
+        pattern = re.compile(
+            r"\\(?:section|subsection|subsubsection)\*?\{([^{}]+)\}", re.IGNORECASE
+        )
+    else:
+        pattern = re.compile(r"(?m)^#{1,6}\s+(.+?)\s*$")
+
+    matches = list(pattern.finditer(raw))
+    outline: list[dict[str, str]] = []
+    for index, match in enumerate(matches):
+        end = matches[index + 1].start() if index + 1 < len(matches) else len(raw)
+        body = visible_text(raw[match.end() : end], suffix)
+        sentences = split_sentences(body)
+        outline.append(
+            {
+                "section": match.group(1).strip(),
+                "opening_move": sentences[0] if sentences else "",
+            }
+        )
+    return outline
+
+
+def extract_float_integrity(raw: str, suffix: str) -> dict[str, Any]:
+    """Inventory figure/table definitions and references using conservative patterns."""
+    if suffix.lower() == ".tex":
+        float_pattern = re.compile(
+            r"\\begin\{(figure|table)\*?\}(.*?)\\end\{\1\*?\}",
+            re.IGNORECASE | re.DOTALL,
+        )
+        definitions: list[dict[str, str]] = []
+        labels: set[str] = set()
+        for kind, body in float_pattern.findall(raw):
+            label_match = re.search(r"\\label\{([^{}]+)\}", body)
+            caption_match = re.search(r"\\caption(?:\[[^]]*\])?\{([^{}]*)\}", body, re.DOTALL)
+            label = label_match.group(1).strip() if label_match else ""
+            caption = re.sub(r"\s+", " ", caption_match.group(1)).strip() if caption_match else ""
+            if label:
+                labels.add(label)
+            definitions.append({"kind": kind.lower(), "label": label, "caption": caption})
+
+        references = {
+            key.strip()
+            for group in FLOAT_REF_PATTERN.findall(raw)
+            for key in group.split(",")
+            if key.strip()
+        }
+        float_like_references = {
+            key for key in references if re.match(r"^(?:fig|figure|tab|table)[:._-]", key, re.I)
+        }
+        return {
+            "definitions": definitions,
+            "defined_labels": sorted(labels),
+            "referenced_labels": sorted(references & labels),
+            "unreferenced_labels": sorted(labels - references),
+            "undefined_float_references": sorted(float_like_references - labels),
+            "missing_label_count": sum(1 for item in definitions if not item["label"]),
+            "missing_caption_count": sum(1 for item in definitions if not item["caption"]),
+        }
+
+    images = [
+        {"kind": "figure", "label": target.strip(), "caption": alt.strip()}
+        for alt, target in re.findall(r"!\[([^]]*)\]\(([^)]+)\)", raw)
+    ]
+    return {
+        "definitions": images,
+        "defined_labels": [item["label"] for item in images],
+        "referenced_labels": [],
+        "unreferenced_labels": [],
+        "undefined_float_references": [],
+        "missing_label_count": 0,
+        "missing_caption_count": sum(1 for item in images if not item["caption"]),
+    }
+
+
 def split_sentences(text: str) -> list[str]:
     candidates = re.split(r"(?<=[.!?])\s+(?=[A-Z0-9\[])|\n+", text)
     return [re.sub(r"\s+", " ", item).strip() for item in candidates if item.strip()]
@@ -121,6 +200,8 @@ def analyze(raw: str, suffix: str, max_excerpts: int = 2) -> dict[str, Any]:
     text = visible_text(raw, suffix)
     sentences = split_sentences(text)
     sections = extract_sections(raw)
+    reverse_outline = extract_section_blocks(raw, suffix)
+    float_integrity = extract_float_integrity(raw, suffix)
 
     strong_claims: dict[str, dict[str, Any]] = {}
     for label, regex in STRONG_CLAIMS.items():
@@ -160,8 +241,30 @@ def analyze(raw: str, suffix: str, max_excerpts: int = 2) -> dict[str, Any]:
     todo_count = len(TODO_PATTERN.findall(raw))
     if todo_count:
         warnings.append(f"Detected {todo_count} unfinished-text marker(s).")
+    if float_integrity["missing_label_count"]:
+        warnings.append(
+            f"Detected {float_integrity['missing_label_count']} figure/table environment(s) without a label."
+        )
+    if float_integrity["missing_caption_count"]:
+        warnings.append(
+            f"Detected {float_integrity['missing_caption_count']} figure/table item(s) without a caption or alt text."
+        )
+    if float_integrity["unreferenced_labels"]:
+        warnings.append(
+            "Defined figure/table labels not referenced in text: "
+            + ", ".join(float_integrity["unreferenced_labels"])
+        )
+    if float_integrity["undefined_float_references"]:
+        warnings.append(
+            "Figure/table references without a detected definition: "
+            + ", ".join(float_integrity["undefined_float_references"])
+        )
+    empty_openings = [item["section"] for item in reverse_outline if not item["opening_move"]]
+    if empty_openings:
+        warnings.append("Sections with no detectable prose opening: " + ", ".join(empty_openings))
 
     return {
+        "schema_version": "0.2.0",
         "summary": {
             "characters": len(raw),
             "approx_words": len(re.findall(r"\b\w+\b", text)),
@@ -169,11 +272,13 @@ def analyze(raw: str, suffix: str, max_excerpts: int = 2) -> dict[str, Any]:
             "unfinished_markers": todo_count,
         },
         "sections": sections,
+        "reverse_outline": reverse_outline,
         "research_question_markers": rq_matches,
         "contribution_candidates": contribution_excerpts,
         "strong_claim_terms": strong_claims,
         "evidence_marker_counts": evidence_counts,
         "section_vocabulary": dict(section_tokens.most_common(12)),
+        "figure_table_integrity": float_integrity,
         "warnings": warnings,
         "interpretation_note": (
             "These are deterministic review leads. Absence or presence of a marker does not establish quality."
@@ -196,6 +301,13 @@ def markdown_report(path: Path, result: dict[str, Any]) -> str:
         "",
     ]
     lines.extend(f"- {section}" for section in result["sections"] or ["None detected"])
+    lines.extend(["", "## Reverse Outline", "", "| Section | Opening move |", "|---|---|"])
+    if result["reverse_outline"]:
+        for item in result["reverse_outline"]:
+            opening = item["opening_move"].replace("|", "\\|") or "No prose detected"
+            lines.append(f"| {item['section']} | {opening} |")
+    else:
+        lines.append("| None detected | |")
     lines.extend(["", "## Contribution Candidates", ""])
     lines.extend(f"- {item}" for item in result["contribution_candidates"] or ["None detected"])
     lines.extend(["", "## Strong-Claim Terms", "", "| Construct | Count | Example |", "|---|---:|---|"])
@@ -211,6 +323,20 @@ def markdown_report(path: Path, result: dict[str, Any]) -> str:
     )
     if not result["evidence_marker_counts"]:
         lines.append("- None detected")
+    integrity = result["figure_table_integrity"]
+    lines.extend(
+        [
+            "",
+            "## Figure and Table Integrity",
+            "",
+            f"- Items detected: {len(integrity['definitions'])}",
+            f"- Missing labels: {integrity['missing_label_count']}",
+            f"- Missing captions or alt text: {integrity['missing_caption_count']}",
+            "- Unreferenced labels: " + (", ".join(integrity["unreferenced_labels"]) or "None"),
+            "- Undefined figure/table references: "
+            + (", ".join(integrity["undefined_float_references"]) or "None"),
+        ]
+    )
     lines.extend(["", "## Review Leads", ""])
     lines.extend(f"- {item}" for item in result["warnings"] or ["No structural warnings detected."])
     lines.extend(["", f"> {result['interpretation_note']}", ""])

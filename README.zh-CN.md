@@ -10,6 +10,7 @@
   <a href="https://github.com/RobbieRao/hci-paper-writing/actions/workflows/ci.yml"><img src="https://github.com/RobbieRao/hci-paper-writing/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-34d399.svg" alt="MIT License"></a>
   <a href="skills/hci-paper-writing/SKILL.md"><img src="https://img.shields.io/badge/Agent%20Skill-open%20standard-8b5cf6.svg" alt="Agent Skill"></a>
+  <img src="https://img.shields.io/badge/version-0.2.0-60a5fa.svg" alt="版本 0.2.0">
   <img src="https://img.shields.io/badge/preflight-local%20%26%20read--only-22d3ee.svg" alt="本地只读预检">
   <img src="https://img.shields.io/badge/benchmark-%E6%AD%A3%E5%9C%A8%E5%BC%80%E5%8F%91-f59e0b.svg" alt="Benchmark 正在开发">
 </p>
@@ -17,7 +18,7 @@
 <p align="center">
   <strong>投稿前，先找到论证最薄弱的地方。</strong><br>
   一个面向 HCI 论文的开源 Agent Skill。它梳理 contribution 与 evidence，
-  再以 HCI reviewer 的视角检查稿件。
+  用 HCI 特定的 reviewer lenses 做压力测试，并让初稿到 rebuttal 的修改过程可追踪。
 </p>
 
 ---
@@ -46,6 +47,18 @@ Design 各有自己的评价标准，因此 Skill 会选择相应的 review lens
 
 同一个 Skill 也支持论文规划、章节修改、用户研究报告、interaction figure、
 LLM-integrated system、隐私检查和投稿政策核验。
+
+### 当前开源版新增能力
+
+| 能力 | 为什么重要 |
+|---|---|
+| **持久化 `.hci-paper/` 工作区** | Claims、figures、reviewer comments、政策核验与修改承诺可以跨 session 保留 |
+| **HCI reviewer panel** | Contribution、method tradition、reader/venue 三个 lens 先分别审阅，再做保留分歧的 meta-review |
+| **Rebuttal 闭环账本** | 每个 response promise 都对应 manuscript change 与 verification |
+| **机器可读一致性审计** | Reverse outline、RQ、强 claim、未完成文本和 LaTeX 图表完整性都可输出为 Markdown 或 JSON |
+
+它不是给通用语法润色器贴一层 HCI prompt，而是从 HCI 的 contribution types
+和不同研究传统出发组织整套工作流。
 
 ## 30 秒安装
 
@@ -81,6 +94,12 @@ Use $hci-paper-writing in hci-diagnose mode on my abstract and contributions.
 分别检查 contribution、method 与 reader/venue risks。
 ```
 
+如果是一篇需要多轮修改的论文：
+
+```text
+请用 $hci-paper-writing 的 hci-init 模式初始化这个项目，然后运行 hci-panel。
+```
+
 ## 本地 manuscript preflight
 
 在语义审稿前运行本地确定性扫描：
@@ -95,10 +114,15 @@ python3 skills/hci-paper-writing/scripts/manuscript_audit.py paper.tex
 - 明确的 RQ 与 contribution 表达；
 - trust、understanding、agency、usefulness 等强 construct；
 - 常见的 study、ethics 与 limitations 标记；
+- 每个章节开头论证动作构成的 reverse outline；
+- LaTeX 图表定义、引用、caption 与孤立 label；
 - `TODO`、`TBD`、`FIXME` 等未完成内容。
 
 扫描器只使用 Python 标准库，**本地运行、只读、零网络请求**。它只报告值得
 进一步检查的位置，不给论文打质量分。
+
+需要接入 agent pipeline 或 benchmark harness 时，可加 `--format json` 得到
+稳定的机器可读输出。
 
 <details>
 <summary><strong>查看 preflight 示例</strong></summary>
@@ -121,6 +145,35 @@ python3 skills/hci-paper-writing/scripts/manuscript_audit.py paper.tex
 你可以直接用仓库里的[合成示例论文](examples/synthetic-paper.md)测试。它不包含
 任何真实参与者或伦理审批信息。
 </details>
+
+## 给每篇论文一份可持续的记忆
+
+在已有论文目录中初始化本地工作区：
+
+```bash
+python3 skills/hci-paper-writing/scripts/project_workspace.py \
+  /path/to/paper --manuscript paper.tex
+```
+
+它会创建 `.hci-paper/`，其中包含 context，以及 claims、figures、reviewer
+comments、revision 和已核验 venue policies 的独立账本；`runs/` 用来保存可比较的
+审计报告。初始化器没有第三方依赖、不会联网，也不会覆盖已有工作区。
+
+可以先用 `--dry-run` 查看计划，或用 `--json` 接入其他工具。
+
+## 从 reviewer concern 到已验证的修改
+
+`hci-panel` 会先收集相互隔离的 reviewer lenses，再做综合。如果运行平台无法提供
+真正独立的 reviewer，Skill 会明确说明，而不会把连续扮演的 persona 包装成独立证据。
+
+`hci-rebuttal` 会给 concern 分配稳定 ID，并追踪下面这条链：
+
+```text
+reviewer concern -> evidence -> response claim -> manuscript change -> verification
+```
+
+目的不是写一封更自信的 rebuttal，而是防止 response letter 与委员会最终看到的
+manuscript 脱节。
 
 ## 它怎么工作
 
@@ -166,6 +219,7 @@ skills/hci-paper-writing/
 ├── assets/                          # Intake 与 revision 模板
 ├── scripts/
 │   ├── manuscript_audit.py          # 本地确定性预检
+│   ├── project_workspace.py         # 安全的持久化论文状态初始化器
 │   └── validate_skill.py            # 零依赖结构校验
 └── references/
     ├── contribution-types.md
@@ -175,6 +229,9 @@ skills/hci-paper-writing/
     ├── study-evidence.md
     ├── section-patterns.md
     ├── reviewer-checklist.md
+    ├── reviewer-panel.md
+    ├── rebuttal-and-revision.md
+    ├── project-workspace.md
     ├── llm-systems.md
     └── policy-and-privacy.md
 ```
@@ -195,12 +252,16 @@ skills/hci-paper-writing/
 - [x] 定性、定量、design、systems、field 与 mixed-method lenses
 - [x] 隐私边界与实时政策核验
 - [x] English / 简体中文双语 README
+- [x] 持久化 per-paper workspace 与机器可读 ledgers
+- [x] Reverse outline 与 LaTeX 图表一致性检查
+- [x] 角色分离的 HCI reviewer panel 与 meta-review protocol
+- [x] Reviewer comment、rebuttal、revision 与 verification 闭环
 - [ ] HCI Paper Coach Benchmark：近五年 CHI 论文 embedding 分析
 - [ ] 经权利确认的接收/拒稿投稿、reviews 与 rebuttals
 - [ ] 带版本化数据切分、annotations 与 data cards 的公开 benchmark
-- [ ] LaTeX 跨章节一致性检查
+- [ ] 正文、figures 与 tables 的数字和术语一致性检查
 - [ ] CSCW、DIS、UIST、accessibility 与 health HCI 专项包
-- [ ] Reviewer-feedback 对比与 revision tracking
+- [ ] 跨 manuscript version 的 reviewer-feedback 纵向对比
 
 <a id="hci-paper-coach-benchmark正在开发"></a>
 
@@ -245,6 +306,7 @@ metadata source，或者经过授权的投稿历程。贡献者会获得私测�
 
 项目采用 MIT License。详见 [LICENSE](LICENSE) 与
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+版本记录见 [CHANGELOG.md](CHANGELOG.md)。
 
 本项目为独立创作，参考了公开的 HCI 投稿指南与开源学术写作工作流；仓库中没有
 直接打包第三方源代码。
