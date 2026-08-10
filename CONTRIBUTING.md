@@ -12,8 +12,34 @@ project's methodological range without collapsing HCI into one review tradition.
 - an accessibility or privacy improvement;
 - a clearer output contract or reproducible example.
 
+## Benchmark contributions
+
+The HCI Paper Coach Benchmark is in active development. Useful contributions
+include:
+
+- reproducible metadata or embedding pipelines for the most recent five years of
+  CHI papers;
+- expert-authored synthetic failure cases and annotation protocols;
+- evaluation code for issue detection, false positives, evidence traceability,
+  method fit, actionability, and calibration;
+- an accepted or rejected submission journey when the contributor has the rights
+  and permissions needed to share the manuscript, reviews, rebuttal, decision,
+  and revisions;
+- de-identification, licensing, consent, and dataset-governance expertise.
+
+Benchmark contributors will receive priority invitations to the private beta,
+subject to capacity and completion of applicable rights, privacy, and consent
+checks. A contribution does not guarantee inclusion in a public dataset.
+
+**Do not upload manuscript or review content to a public issue or pull request.**
+Open an issue containing only a high-level description of the proposed
+contribution so maintainers can arrange an appropriate review path.
+
 Do not submit confidential manuscripts, private peer reviews, fabricated studies,
-or copyrighted paper text you are not authorized to redistribute.
+personal data, or copyrighted text you are not authorized to redistribute. An
+author's permission to share a manuscript does not automatically establish the
+right to publish reviewer-authored text; review and clear each artifact
+separately.
 
 ## Development
 
@@ -31,4 +57,3 @@ they are backed by a public, reproducible evaluation.
 
 By contributing, you agree that your contribution is licensed under the MIT
 License of this repository.
-

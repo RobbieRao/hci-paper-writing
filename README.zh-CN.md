@@ -11,6 +11,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-34d399.svg" alt="MIT License"></a>
   <a href="skills/hci-paper-writing/SKILL.md"><img src="https://img.shields.io/badge/Agent%20Skill-open%20standard-8b5cf6.svg" alt="Agent Skill"></a>
   <img src="https://img.shields.io/badge/preflight-local%20%26%20read--only-22d3ee.svg" alt="本地只读预检">
+  <img src="https://img.shields.io/badge/benchmark-%E6%AD%A3%E5%9C%A8%E5%BC%80%E5%8F%91-f59e0b.svg" alt="Benchmark 正在开发">
 </p>
 
 <p align="center">
@@ -31,6 +32,10 @@ Research through Design 不能被同一套通用 rubric 粗暴评价。
 
 > [!IMPORTANT]
 > 这是作者侧的诊断与修改工具，不是中稿预测器、引用生成器，也不能替代研究者的判断。
+
+> [!NOTE]
+> 我们正在开发近五年 CHI 论文 embedding 分析，以及经权利确认的接收/拒稿投稿、
+> reviews 与 rebuttals 数据集。[Benchmark 贡献者将获得私测优先邀请。](#hci-paper-coach-benchmark正在开发)
 
 ## 三个真正有用的核心工作流
 
@@ -137,6 +142,12 @@ Skill 不会把“我们进行了一项用户研究”当成 contribution。它�
 最低限度可执行的修复方案。每个强 claim 都必须对应 evidence、citation，
 或者更克制的措辞。
 
+### Corpus-grounded，但不演 benchmark 戏
+
+新的 `hci-grounded` 协议可以把 manuscript 与一个明确声明的论文语料库进行比较，
+并记录 corpus、年份、query、filters、覆盖缺口和实际查看过的来源。Embedding
+可以帮助检索相近论文，但不能证明 novelty、quality 或中稿可能性。
+
 ### 查当前政策，不背过期规则
 
 Venue 规则会变化。Skill 要求 agent 在运行时从官方页面核验 deadline、length、
@@ -161,6 +172,7 @@ skills/hci-paper-writing/
 │   └── validate_skill.py            # 零依赖结构校验
 └── references/
     ├── contribution-types.md
+    ├── evidence-grounding.md
     ├── workflows.md
     ├── method-lenses.md
     ├── study-evidence.md
@@ -187,10 +199,35 @@ skills/hci-paper-writing/
 - [x] 定性、定量、design、systems、field 与 mixed-method lenses
 - [x] 隐私边界与实时政策核验
 - [x] English / 简体中文双语 README
-- [ ] 使用合成稿与作者授权稿建立公开 benchmark
+- [ ] HCI Paper Coach Benchmark：近五年 CHI 论文 embedding 分析
+- [ ] 经权利确认的接收/拒稿投稿、reviews 与 rebuttals
+- [ ] 带版本化数据切分、annotations 与 data cards 的公开 benchmark
 - [ ] LaTeX 跨章节一致性检查
 - [ ] CSCW、DIS、UIST、accessibility 与 health HCI 专项包
 - [ ] Reviewer-feedback 对比与 revision tracking
+
+## HCI Paper Coach Benchmark——正在开发
+
+我们正在构建一套开放、可复现、理解 HCI 方法传统的论文反馈评测集。计划中的
+首个版本会刻意分成三个层次：
+
+1. **近五年 CHI 论文分析。** 使用 embedding 辅助梳理近期 CHI 论文的
+   contribution、method、topic 与 subcommunity；公开准确覆盖范围、检索参数、
+   来源链接和已知缺口。只有在许可允许时才会索引或再分发全文。
+2. **接收与拒稿的完整投稿历程。** 在作者贡献、权利确认、必要匿名化，并且符合
+   venue policy 的前提下，收录 manuscript、reviews、rebuttal、decision 与
+   revision history。
+3. **可验证的 evaluation cases。** 用合成稿和专家标注案例评测 contribution
+   diagnosis、claim-evidence alignment、method fit、reviewer-risk recovery、
+   建议的可执行性以及 false-positive control。
+
+这个数据集**尚未发布**；当前 Skill 也不会声称自己已经用 CHI 私密 reviews
+训练或验证。把“正在建设”和“已经拥有”分开，是我们可信度的一部分。
+
+欢迎贡献 synthetic failure case、annotation protocol、检索或评测代码、公开
+metadata source，或者你有权授权的投稿历程。Benchmark 贡献者会获得私测优先
+邀请，具体安排取决于名额以及数据与 consent 审核。请先阅读
+[CONTRIBUTING.md](CONTRIBUTING.md)，并且**不要在公开 issue 中附上任何机密材料**。
 
 ## 参与贡献
 
@@ -216,4 +253,3 @@ skills/hci-paper-writing/
 
 本项目为独立创作，参考了公开的 HCI 投稿指南与开源学术写作工作流；仓库中没有
 直接打包第三方源代码。
-

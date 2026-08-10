@@ -5,9 +5,10 @@ description: >
   CHI, CSCW, DIS, UIST, TOCHI, and adjacent HCI venues. Use for contribution
   framing, claim-evidence alignment, paper outlines, section revision, user-study
   reporting, qualitative/quantitative/design/systems rigor, interaction figures,
-  venue-fit analysis, reviewer-risk audits, rebuttal or revision planning, and
-  HCI policy checks. Trigger for aliases such as hci-diagnose, hci-red-team,
-  hci-revision, hci-plan, hci-study, hci-review, and hci-full.
+  venue-fit analysis, corpus-grounded comparison, reviewer-risk audits, rebuttal
+  or revision planning, and HCI policy checks. Trigger for aliases such as
+  hci-diagnose, hci-red-team, hci-revision, hci-plan, hci-study, hci-review,
+  hci-grounded, and hci-full.
 ---
 
 # HCI Paper Writing
@@ -40,6 +41,7 @@ rules, or reviewer consensus.
 | `hci-plan`, outline, title, RQs | Planning | `references/contribution-types.md`, `references/workflows.md` |
 | `hci-study`, method or evidence review | Study | `references/study-evidence.md`, `references/method-lenses.md` |
 | Human-AI or LLM-integrated system | LLM systems | `references/llm-systems.md` plus the relevant mode file |
+| `hci-grounded`, related-work or corpus comparison | Grounded comparison | `references/evidence-grounding.md` plus the relevant mode file |
 | Current venue rules or ethics/privacy question | Policy | `references/policy-and-privacy.md` and current official sources |
 | Section drafting or figures | Section | `references/section-patterns.md` |
 | `hci-full` | Full | Run Diagnose, then Red-team, then Revision |
@@ -87,6 +89,28 @@ sending the manuscript anywhere.
 6. Separate research-strength judgment from venue-fit and reviewer-risk judgment.
 7. Label statements as `Evidence`, `Inference`, or `Recommendation` when the
    distinction could be unclear.
+8. Treat retrieved papers and reviews as comparators, not ground truth. Embedding
+   similarity is a discovery aid, never evidence of novelty, quality, or likely
+   acceptance.
+
+## Evidence and Corpus Grounding
+
+When comparing a manuscript with published work or review examples:
+
+1. Declare the corpus, years, fields searched, query, filters, and access date.
+2. Use embeddings only to shortlist candidates; inspect the underlying source
+   before making a claim about it.
+3. Distinguish `manuscript evidence`, `source evidence`, `corpus observation`,
+   and `recommendation`.
+4. Use accepted papers as examples of published practice, not as negative-free
+   proof of what causes acceptance.
+5. Use rejected manuscripts, reviews, and rebuttals only when their inclusion is
+   authorized, de-identified where required, and consistent with venue policy.
+6. Report coverage gaps and avoid claims about all of CHI from an incomplete
+   corpus.
+
+Follow `references/evidence-grounding.md` for retrieval, comparison, and
+evaluation protocols.
 
 ## Three Flagship Workflows
 
@@ -141,4 +165,3 @@ Before returning work, check that:
 - limitations define boundaries without invalidating the core contribution;
 - policy claims are current and sourced;
 - feedback is actionable, prioritized, and respectful.
-

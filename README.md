@@ -11,6 +11,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-34d399.svg" alt="MIT License"></a>
   <a href="skills/hci-paper-writing/SKILL.md"><img src="https://img.shields.io/badge/Agent%20Skill-open%20standard-8b5cf6.svg" alt="Agent Skill"></a>
   <img src="https://img.shields.io/badge/preflight-local%20%26%20read--only-22d3ee.svg" alt="Local and read-only preflight">
+  <img src="https://img.shields.io/badge/benchmark-in%20development-f59e0b.svg" alt="Benchmark in development">
 </p>
 
 <p align="center">
@@ -33,6 +34,11 @@ judged with one generic rubric.
 > [!IMPORTANT]
 > This is an author-side reasoning and revision tool—not an acceptance predictor,
 > citation generator, or substitute for research judgment.
+
+> [!NOTE]
+> We are building a five-year CHI embedding analysis and a rights-cleared dataset
+> of accepted/rejected submission journeys, reviews, and rebuttals.
+> [Benchmark contributors get priority private-beta invitations.](#hci-paper-coach-benchmark--in-active-development)
 
 ## Three workflows that earn their place in your repo
 
@@ -138,6 +144,13 @@ Every major criticism must point to manuscript evidence, explain why it matters,
 and propose a minimum credible repair. Every strong author claim must map to
 evidence, a citation, or narrower wording.
 
+### Corpus-grounded, without benchmark theater
+
+The new `hci-grounded` protocol can compare a manuscript with a declared paper
+corpus while preserving provenance. It records the corpus, years, query, filters,
+coverage gaps, and sources inspected. Embeddings may retrieve nearby work; they
+do not prove novelty, quality, or likely acceptance.
+
 ### Current policy, not cached folklore
 
 Venue rules change. The skill requires agents to verify deadlines, length,
@@ -163,6 +176,7 @@ skills/hci-paper-writing/
 │   └── validate_skill.py            # Zero-dependency package validator
 └── references/
     ├── contribution-types.md
+    ├── evidence-grounding.md
     ├── workflows.md
     ├── method-lenses.md
     ├── study-evidence.md
@@ -192,11 +206,40 @@ skills/hci-paper-writing/
 - [x] Local Markdown/LaTeX/text preflight
 - [x] Qualitative, quantitative, design, systems, field, and mixed-method lenses
 - [x] Privacy and live-policy guardrails
-- [ ] Public benchmark using synthetic and author-consented manuscripts
+- [ ] HCI Paper Coach Benchmark: five-year CHI embedding analysis
+- [ ] Rights-cleared accepted/rejected submissions, reviews, and rebuttals
+- [ ] Public benchmark release with versioned splits, annotations, and data cards
 - [ ] Structured LaTeX cross-section consistency checks
 - [ ] Subcommunity packs for CSCW, DIS, UIST, accessibility, and health HCI
 - [ ] Bilingual Chinese/English report templates
 - [ ] Reviewer-feedback comparison and revision tracking
+
+## HCI Paper Coach Benchmark — in active development
+
+We are building an open, reproducible benchmark for method-aware HCI paper
+feedback. The planned first release has three deliberately separate layers:
+
+1. **Five years of CHI paper analysis.** Embedding-assisted mapping of recent CHI
+   papers by contribution, method, topic, and subcommunity. We will publish exact
+   coverage, retrieval settings, source links, and known gaps. Full text will be
+   indexed or redistributed only where licensing permits.
+2. **Accepted and rejected submission journeys.** Author-contributed,
+   rights-cleared and appropriately de-identified manuscripts paired with
+   reviews, rebuttals, decisions, and revision histories where permission and
+   venue policy allow.
+3. **Evaluation cases.** Synthetic and expert-annotated challenges for
+   contribution diagnosis, claim-evidence alignment, method fit, reviewer-risk
+   recovery, actionability, and false-positive control.
+
+This dataset is **not released yet**, and the current skill does not claim to be
+trained or validated on private CHI reviews. That distinction matters.
+
+Want to help build the benchmark? Contribute a synthetic failure case, annotation
+protocol, retrieval/evaluation code, public metadata source, or an authorized
+submission journey. Benchmark contributors will receive priority invitations to
+the private beta, subject to capacity and data/consent checks. Start with
+[CONTRIBUTING.md](CONTRIBUTING.md)—never attach confidential material to a public
+issue.
 
 ## Contributing
 
