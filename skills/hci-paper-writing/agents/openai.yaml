@@ -1,4 +1,4 @@
 interface:
   display_name: "HCI Paper Coach"
-  short_description: "Diagnose, review, and revise HCI papers"
-  default_prompt: "Use $hci-paper-writing to diagnose my HCI paper's contribution and evidence chain, then give me a prioritized, verifiable revision plan."
+  short_description: "Diagnose, audit, and revise HCI papers"
+  default_prompt: "Use $hci-paper-writing to diagnose my paper’s contribution, evidence, positioning, integrity, and highest-leverage next revision."

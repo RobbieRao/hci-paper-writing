@@ -10,7 +10,7 @@
   <a href="https://github.com/RobbieRao/hci-paper-writing/actions/workflows/ci.yml"><img src="https://github.com/RobbieRao/hci-paper-writing/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-34d399.svg" alt="MIT License"></a>
   <a href="skills/hci-paper-writing/SKILL.md"><img src="https://img.shields.io/badge/Agent%20Skill-open%20standard-8b5cf6.svg" alt="Agent Skill"></a>
-  <img src="https://img.shields.io/badge/version-0.2.0-60a5fa.svg" alt="版本 0.2.0">
+  <img src="https://img.shields.io/badge/version-0.3.0-60a5fa.svg" alt="版本 0.3.0">
   <img src="https://img.shields.io/badge/preflight-local%20%26%20read--only-22d3ee.svg" alt="本地只读预检">
   <img src="https://img.shields.io/badge/benchmark-%E6%AD%A3%E5%9C%A8%E5%BC%80%E5%8F%91-f59e0b.svg" alt="Benchmark 正在开发">
 </p>
@@ -48,7 +48,7 @@ Design 各有自己的评价标准，因此 Skill 会选择相应的 review lens
 同一个 Skill 也支持论文规划、章节修改、用户研究报告、interaction figure、
 LLM-integrated system、隐私检查和投稿政策核验。
 
-### 当前开源版新增能力
+### v0.3.0 新增能力
 
 | 能力 | 为什么重要 |
 |---|---|
@@ -56,9 +56,16 @@ LLM-integrated system、隐私检查和投稿政策核验。
 | **HCI reviewer panel** | Contribution、method tradition、reader/venue 三个 lens 先分别审阅，再做保留分歧的 meta-review |
 | **Rebuttal 闭环账本** | 每个 response promise 都对应 manuscript change 与 verification |
 | **机器可读一致性审计** | Reverse outline、RQ、强 claim、未完成文本和 LaTeX 图表完整性都可输出为 Markdown 或 JSON |
+| **不可静默跳过的 stage gates** | 论文从 framing、study-ready、evidence-frozen、claim-locked 一直走到 review 与 submission，每步保留依据 |
+| **来源与 endorsement 账本** | Chat、meeting、email、reviewer 与 coauthor 材料保留 speaker、permission、evidence 和作者认可状态 |
+| **DOCX 与 submission integrity 检查** | 本地审计覆盖 DOCX、匿名泄漏、LaTeX inputs、graphics、bibliography 与 citation keys |
 
 它不是给通用语法润色器贴一层 HCI prompt，而是从 HCI 的 contribution types
 和不同研究传统出发组织整套工作流。
+
+它还会分开记录四个不同决定：贡献是什么、属于哪个 research area、以什么
+research tradition 产生知识，以及投向哪个 venue。Human-AI 论文不自动等于
+systems paper，CHI 论文也不自动等于 controlled experiment。
 
 ## 30 秒安装
 
@@ -105,7 +112,8 @@ Use $hci-paper-writing in hci-diagnose mode on my abstract and contributions.
 在语义审稿前运行本地确定性扫描：
 
 ```bash
-python3 skills/hci-paper-writing/scripts/manuscript_audit.py paper.tex
+python3 skills/hci-paper-writing/scripts/manuscript_audit.py paper.tex \
+  --anonymous --strict
 ```
 
 它会检测：
@@ -116,10 +124,13 @@ python3 skills/hci-paper-writing/scripts/manuscript_audit.py paper.tex
 - 常见的 study、ethics 与 limitations 标记；
 - 每个章节开头论证动作构成的 reverse outline；
 - LaTeX 图表定义、引用、caption 与孤立 label；
+- LaTeX inputs、graphics、bibliography files 与 citation-key resolution；
+- author metadata、email、identifying URL、acknowledgment 等常见匿名泄漏；
 - `TODO`、`TBD`、`FIXME` 等未完成内容。
 
-扫描器只使用 Python 标准库，**本地运行、只读、零网络请求**。它只报告值得
-进一步检查的位置，不给论文打质量分。
+扫描器只使用 Python 标准库，**本地运行、只读、零网络请求**。它支持 `.docx`、
+`.md`、`.tex` 和 `.txt`，只报告值得进一步检查的位置，不给论文打质量分。
+Strict mode 只会因确定性的 integrity defect 失败，不会因有争议的语义建议失败。
 
 需要接入 agent pipeline 或 benchmark harness 时，可加 `--format json` 得到
 稳定的机器可读输出。
@@ -155,11 +166,38 @@ python3 skills/hci-paper-writing/scripts/project_workspace.py \
   /path/to/paper --manuscript paper.tex
 ```
 
-它会创建 `.hci-paper/`，其中包含 context，以及 claims、figures、reviewer
+它会创建 `.hci-paper/`，其中包含 context，以及 claims、sources 与 endorsement、figures、reviewer
 comments、revision 和已核验 venue policies 的独立账本；`runs/` 用来保存可比较的
 审计报告。初始化器没有第三方依赖、不会联网，也不会覆盖已有工作区。
 
 可以先用 `--dry-run` 查看计划，或用 `--json` 接入其他工具。
+
+工作区包含一条有顺序的 lifecycle：
+
+```text
+framing -> study-ready -> evidence-frozen -> claim-locked -> drafted -> reviewed
+-> response-ready -> submission-ready
+```
+
+每次检查完一个 gate 后只前进一步：
+
+```bash
+python3 skills/hci-paper-writing/scripts/project_workspace.py /path/to/paper \
+  --advance study-ready --note "RQs、ethics 与 study plan 已检查"
+```
+
+脚本会阻止静默跳级，但不会假装一份 state file 能证明研究质量；记录的依据与
+底层 artifacts 仍然需要人来检查。
+
+## 整合笔记，不窃取其中的主张
+
+`hci-integrate` 用于 chats、emails、meeting transcripts、reviewer comments 与
+lab notes。它会先记录每个想法是谁提出、作者是否认可、有什么 evidence，以及
+是否有权使用。作者尚未接受或已经否定的想法，不会擅自进入 manuscript。
+
+`hci-positioning` 则检查论文是否先建立 importance，再给出可辩护的 unresolved
+question、最小诚实 novelty delta，以及 evidence 真正能够满足其 review contract
+的 contribution noun。
 
 ## 从 reviewer concern 到已验证的修改
 
@@ -224,6 +262,7 @@ skills/hci-paper-writing/
 └── references/
     ├── contribution-types.md
     ├── evidence-grounding.md
+    ├── novelty-and-positioning.md
     ├── workflows.md
     ├── method-lenses.md
     ├── study-evidence.md
@@ -232,6 +271,7 @@ skills/hci-paper-writing/
     ├── reviewer-panel.md
     ├── rebuttal-and-revision.md
     ├── project-workspace.md
+    ├── source-integration.md
     ├── llm-systems.md
     └── policy-and-privacy.md
 ```
@@ -256,6 +296,10 @@ skills/hci-paper-writing/
 - [x] Reverse outline 与 LaTeX 图表一致性检查
 - [x] 角色分离的 HCI reviewer panel 与 meta-review protocol
 - [x] Reviewer comment、rebuttal、revision 与 verification 闭环
+- [x] DOCX、匿名、LaTeX dependency、bibliography 与 citation-key 检查
+- [x] 带不可跳级 transition 的论文 lifecycle
+- [x] Source ownership、endorsement、permission 与 evidence tracking
+- [x] Contribution form、research area、tradition 与 venue 四轴模型
 - [ ] HCI Paper Coach Benchmark：近五年 CHI 论文 embedding 分析
 - [ ] 经权利确认的接收/拒稿投稿、reviews 与 rebuttals
 - [ ] 带版本化数据切分、annotations 与 data cards 的公开 benchmark

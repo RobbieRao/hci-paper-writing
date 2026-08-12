@@ -23,10 +23,13 @@ requests.
 |---|---|
 | `context.md` | Stable thesis, venue, method tradition, privacy boundary, stage |
 | `claims.csv` | Claims, evidence, locations, scope, and support status |
+| `sources.csv` | Material owner/speaker, endorsement, permission, and claim support |
 | `figures.csv` | Figure purpose, supported claim, source, reference, caption/alt text |
 | `reviewer-comments.csv` | Normalized concerns before response drafting |
 | `revision-ledger.csv` | Concrete changes and verification tests |
 | `policy-snapshot.md` | Current rules with official URL and access date |
+| `state.json` | Ordered lifecycle stage and evidence note for each transition |
+| `handoff.md` | Minimal cold-resume context, blockers, and next action |
 | `runs/` | Dated or named reports; never silently treated as current truth |
 
 ## State Discipline
@@ -41,6 +44,38 @@ requests.
    record, not permanent guidance.
 7. Keep private drafts and reviews out of public version control unless the
    author has deliberately cleared them.
+
+## Lifecycle Gates
+
+Use these stages in order:
+
+```text
+framing -> study-ready -> evidence-frozen -> claim-locked -> drafted -> reviewed
+-> response-ready -> submission-ready
+```
+
+- `study-ready`: RQs, contribution axes, method rationale, ethics, and data plan
+  are reviewable before collection.
+- `evidence-frozen`: the evidence version used for claims is identified; known
+  exclusions and deviations are recorded.
+- `claim-locked`: every central claim has evidence or a declared boundary.
+- `drafted`: all load-bearing sections and primary figures exist.
+- `reviewed`: method-matched and reader/venue passes are recorded.
+- `response-ready`: reviewer concerns or internal risks have dispositions and
+  feasible revision actions.
+- `submission-ready`: deterministic integrity checks pass and current official
+  venue requirements have been verified.
+
+After checking the relevant gate, advance exactly one stage and record the
+evidence for the decision:
+
+```bash
+python3 scripts/project_workspace.py /path/to/paper \
+  --advance study-ready --note "RQs, ethics, and study plan reviewed"
+```
+
+Read status with `--status`. The script prevents skipped stages but cannot prove
+research quality; the note and underlying artifacts remain the audit trail.
 
 ## Run Record
 

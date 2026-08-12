@@ -7,9 +7,11 @@ description: >
   reporting, qualitative/quantitative/design/systems rigor, interaction figures,
   venue-fit analysis, corpus-grounded comparison, reviewer-risk audits, rebuttal
   or revision planning, persistent paper workspaces, cross-section and figure
-  consistency, reviewer-panel synthesis, and HCI policy checks. Trigger for aliases such as
+  consistency, source-material integration, novelty positioning,
+  reviewer-panel synthesis, and HCI policy checks. Trigger for aliases such as
   hci-diagnose, hci-red-team, hci-revision, hci-plan, hci-study, hci-review,
-  hci-grounded, hci-init, hci-consistency, hci-panel, hci-rebuttal, and hci-full.
+  hci-grounded, hci-init, hci-consistency, hci-positioning, hci-integrate,
+  hci-panel, hci-rebuttal, and hci-full.
 ---
 
 # HCI Paper Writing
@@ -41,6 +43,8 @@ rules, or reviewer consensus.
 | `hci-revision`, revise after feedback | Revision | `references/workflows.md`, `references/section-patterns.md` |
 | `hci-init`, persistent project state | Workspace | `references/project-workspace.md` |
 | `hci-consistency`, reverse outline, figure/reference audit | Consistency | `references/project-workspace.md`, `references/section-patterns.md` |
+| `hci-positioning`, novelty, closest work, related work | Positioning | `references/novelty-and-positioning.md`, `references/evidence-grounding.md` |
+| `hci-integrate`, notes, chats, emails, meeting material | Source integration | `references/source-integration.md`, `references/project-workspace.md` |
 | `hci-panel`, independent review perspectives | Reviewer panel | `references/reviewer-panel.md`, `references/method-lenses.md` |
 | `hci-rebuttal`, author response, R&R, shepherding | Rebuttal | `references/rebuttal-and-revision.md`, `references/project-workspace.md` |
 | `hci-plan`, outline, title, RQs | Planning | `references/contribution-types.md`, `references/workflows.md` |
@@ -60,7 +64,8 @@ Collect or infer these fields. Mark missing items rather than inventing them:
 - target venue, track, year, and submission type;
 - working title and abstract;
 - research question(s);
-- claimed contribution(s);
+- primary and optional secondary contribution form;
+- research area and research tradition, kept separate from contribution form;
 - study, artifact, dataset, deployment, or argument used as evidence;
 - current stage and deadline;
 - desired output mode.
@@ -80,7 +85,11 @@ python3 scripts/manuscript_audit.py path/to/manuscript --format markdown
 Use its output as leads, not verdicts. The script detects structure, strong-claim
 terms, RQ/contribution markers, evidence markers, reverse-outline openings,
 figure/table labels and references, captions or alt text, and unfinished text
-without sending the manuscript anywhere. Use `--format json` for automation.
+without sending the manuscript anywhere. It accepts DOCX, Markdown, LaTeX, and
+text. For LaTeX it also checks local inputs, graphics, bibliographies, and
+citation keys. Add `--anonymous` for common identity-leak patterns, `--strict`
+for CI failure on deterministic integrity defects, and `--format json` for
+automation.
 
 For work spanning multiple passes, initialize a local state directory:
 
@@ -94,6 +103,8 @@ or treat a stale ledger as evidence about the current manuscript.
 ## Core Reasoning Rules
 
 1. Name one primary contribution type before evaluating prose.
+   Keep contribution form, research area, research tradition, and venue as four
+   separate axes. Make secondary forms carry their own evidence requirements.
 2. Separate contribution from activity. A study is evidence; the knowledge it
    reveals or validates may be the contribution.
 3. Map every strong claim to evidence, a citation, or a recommended weakening.
@@ -107,6 +118,9 @@ or treat a stale ledger as evidence about the current manuscript.
 8. Treat retrieved papers and reviews as comparators, not ground truth. Embedding
    similarity is a discovery aid, never evidence of novelty, quality, or likely
    acceptance.
+9. Treat contribution nouns as review contracts. Do not call an artifact a
+   framework, a checklist a theory, or a component combination a research gap
+   unless the corresponding evidence can satisfy that rubric.
 
 ## Evidence and Corpus Grounding
 
@@ -169,6 +183,17 @@ polish text whose underlying claim is unsupported.
 For reviewer feedback or a response letter, follow
 `references/rebuttal-and-revision.md`. Link every response promise to an exact
 manuscript action and verify it before marking the item done.
+
+## Source and Build Integrity
+
+When integrating chats, notes, emails, meeting transcripts, or reviewer text,
+follow `references/source-integration.md`. Preserve speaker ownership and use
+only author-endorsed ideas. Internal material may establish intent but does not
+replace scholarly or empirical evidence.
+
+After substantive LaTeX edits, compile with the project's documented command
+when a toolchain is available. Do not call the edit complete while compilation
+or deterministic dependency checks fail; report the first unresolved blocker.
 
 ## Current Policy Rule
 

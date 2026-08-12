@@ -10,9 +10,11 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import zipfile
 from collections import Counter
 from pathlib import Path
 from typing import Any
+from xml.etree import ElementTree
 
 
 STRONG_CLAIMS = {
@@ -54,12 +56,140 @@ TODO_PATTERN = re.compile(r"\b(?:TODO|TBD|FIXME|XXX)\b|\[\?\]|\\todo\b", re.IGNO
 FLOAT_REF_PATTERN = re.compile(
     r"\\(?:ref|autoref|cref|Cref)\*?\{([^{}]+)\}", re.IGNORECASE
 )
+ANONYMITY_PATTERNS = (
+    ("email address", re.compile(r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", re.I)),
+    ("ORCID", re.compile(r"\bORCID\b|orcid\.org/\d{4}-\d{4}-\d{4}-\d{3}[\dX]", re.I)),
+    ("identifying URL", re.compile(r"https?://(?:www\.)?(?:github\.com|gitlab\.com|[\w.-]+\.edu)/[^\s})]+", re.I)),
+    ("author metadata", re.compile(r"\\(?:author|affiliation|institution|email)\s*\{", re.I)),
+    ("acknowledgment", re.compile(r"\\section\*?\{acknowledg(?:e)?ments?\}|^#{1,6}\s+acknowledg(?:e)?ments?\b", re.I | re.M)),
+    ("funding or grant text", re.compile(r"\b(?:grant (?:number|no\.?|#)|funded by|supported by)\b", re.I)),
+)
 
 
 def read_manuscript(path: Path) -> str:
+    if path.suffix.lower() == ".docx":
+        with zipfile.ZipFile(path) as archive:
+            xml = archive.read("word/document.xml")
+        root = ElementTree.fromstring(xml)
+        namespace = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
+        paragraphs: list[str] = []
+        for paragraph in root.findall(".//w:p", namespace):
+            parts = [node.text or "" for node in paragraph.findall(".//w:t", namespace)]
+            if parts:
+                paragraphs.append("".join(parts))
+        return "\n\n".join(paragraphs)
     if path.suffix.lower() not in {".md", ".markdown", ".tex", ".txt"}:
-        raise ValueError("Supported inputs are .md, .markdown, .tex, and .txt")
+        raise ValueError("Supported inputs are .docx, .md, .markdown, .tex, and .txt")
     return path.read_text(encoding="utf-8")
+
+
+def expand_latex_inputs(path: Path, visited: set[Path] | None = None) -> str:
+    """Expand readable local input/include files for semantic checks, without writing."""
+    resolved_path = path.resolve()
+    seen = set() if visited is None else set(visited)
+    if resolved_path in seen:
+        return f"% recursive input skipped: {resolved_path.name}\n"
+    seen.add(resolved_path)
+    raw = resolved_path.read_text(encoding="utf-8", errors="replace")
+
+    def replace(match: re.Match[str]) -> str:
+        value = match.group(1).strip()
+        dependency = _resolve_dependency(resolved_path.parent, value, (".tex",))
+        if dependency is None:
+            return match.group(0)
+        return "\n" + expand_latex_inputs(dependency, seen) + "\n"
+
+    return re.sub(r"\\(?:input|include|subfile)\s*\{([^{}]+)\}", replace, raw, flags=re.I)
+
+
+def extract_anonymity_risks(raw: str) -> list[dict[str, Any]]:
+    risks: list[dict[str, Any]] = []
+    for label, pattern in ANONYMITY_PATTERNS:
+        for match in pattern.finditer(raw):
+            line = raw.count("\n", 0, match.start()) + 1
+            start = max(0, match.start() - 55)
+            end = min(len(raw), match.end() + 55)
+            snippet = re.sub(r"\s+", " ", raw[start:end]).strip()
+            risks.append({"type": label, "line": line, "snippet": snippet})
+            break
+    return risks
+
+
+def _resolve_dependency(base_dir: Path, value: str, extensions: tuple[str, ...]) -> Path | None:
+    candidate = base_dir / value.strip()
+    if candidate.is_file():
+        return candidate
+    if candidate.suffix:
+        return None
+    for extension in extensions:
+        expanded = candidate.with_suffix(extension)
+        if expanded.is_file():
+            return expanded
+    return None
+
+
+def extract_latex_project_integrity(
+    raw: str, base_dir: Path | None, semantic_raw: str | None = None
+) -> dict[str, Any]:
+    empty = {
+        "checked": base_dir is not None,
+        "missing_inputs": [],
+        "missing_graphics": [],
+        "missing_bibliographies": [],
+        "citation_keys": [],
+        "undefined_citation_keys": [],
+    }
+    if base_dir is None:
+        return empty
+
+    source = re.sub(r"(?m)(?<!\\)%.*$", "", raw)
+    citation_source = re.sub(
+        r"(?m)(?<!\\)%.*$", "", raw if semantic_raw is None else semantic_raw
+    )
+    inputs = re.findall(r"\\(?:input|include|subfile)\s*\{([^{}]+)\}", source, re.I)
+    graphics = re.findall(r"\\includegraphics(?:\[[^]]*\])?\s*\{([^{}]+)\}", source, re.I)
+    bib_groups = re.findall(r"\\bibliography\s*\{([^{}]+)\}", source, re.I)
+    bib_groups += re.findall(r"\\addbibresource(?:\[[^]]*\])?\s*\{([^{}]+)\}", source, re.I)
+    bibliographies = [item.strip() for group in bib_groups for item in group.split(",") if item.strip()]
+    citation_groups = re.findall(
+        r"\\(?:cite|citep|citet|parencite|textcite|autocite)\w*\s*(?:\[[^]]*\]\s*)*\{([^{}]+)\}",
+        citation_source,
+        re.I,
+    )
+    citation_keys = sorted(
+        {item.strip() for group in citation_groups for item in group.split(",") if item.strip()}
+    )
+
+    missing_inputs = sorted(
+        value for value in inputs if _resolve_dependency(base_dir, value, (".tex",)) is None
+    )
+    missing_graphics = sorted(
+        value
+        for value in graphics
+        if _resolve_dependency(base_dir, value, (".pdf", ".png", ".jpg", ".jpeg", ".svg", ".eps"))
+        is None
+    )
+    resolved_bibs = [
+        resolved
+        for value in bibliographies
+        if (resolved := _resolve_dependency(base_dir, value, (".bib",))) is not None
+    ]
+    missing_bibliographies = sorted(
+        value for value in bibliographies if _resolve_dependency(base_dir, value, (".bib",)) is None
+    )
+    bib_keys: set[str] = set()
+    for bib_path in resolved_bibs:
+        bib_text = bib_path.read_text(encoding="utf-8", errors="replace")
+        bib_keys.update(re.findall(r"@\w+\s*\{\s*([^,\s]+)\s*,", bib_text, re.I))
+
+    return {
+        "checked": True,
+        "missing_inputs": missing_inputs,
+        "missing_graphics": missing_graphics,
+        "missing_bibliographies": missing_bibliographies,
+        "citation_keys": citation_keys,
+        "undefined_citation_keys": sorted(set(citation_keys) - bib_keys) if resolved_bibs else [],
+    }
 
 
 def visible_text(raw: str, suffix: str) -> str:
@@ -93,7 +223,7 @@ def visible_text(raw: str, suffix: str) -> str:
 
 def extract_sections(raw: str) -> list[str]:
     markdown = [m.group(2).strip() for m in re.finditer(r"(?m)^(#{1,6})\s+(.+?)\s*$", raw)]
-    latex = [
+    latex = (["Abstract"] if re.search(r"\\begin\{abstract\}", raw, re.I) else []) + [
         m.group(1).strip()
         for m in re.finditer(r"\\(?:sub)*section\*?\{([^{}]+)\}", raw, re.IGNORECASE)
     ]
@@ -132,7 +262,7 @@ def extract_float_integrity(raw: str, suffix: str) -> dict[str, Any]:
     """Inventory figure/table definitions and references using conservative patterns."""
     if suffix.lower() == ".tex":
         float_pattern = re.compile(
-            r"\\begin\{(figure|table)\*?\}(.*?)\\end\{\1\*?\}",
+            r"\\begin\{(figure|table|teaserfigure)\*?\}(.*?)\\end\{\1\*?\}",
             re.IGNORECASE | re.DOTALL,
         )
         definitions: list[dict[str, str]] = []
@@ -196,12 +326,27 @@ def excerpts(sentences: list[str], pattern: re.Pattern[str], limit: int) -> list
     return found
 
 
-def analyze(raw: str, suffix: str, max_excerpts: int = 2) -> dict[str, Any]:
-    text = visible_text(raw, suffix)
+def analyze(
+    raw: str,
+    suffix: str,
+    max_excerpts: int = 2,
+    *,
+    anonymous: bool = False,
+    base_dir: Path | None = None,
+    semantic_raw: str | None = None,
+) -> dict[str, Any]:
+    content = raw if semantic_raw is None else semantic_raw
+    text = visible_text(content, suffix)
     sentences = split_sentences(text)
-    sections = extract_sections(raw)
-    reverse_outline = extract_section_blocks(raw, suffix)
-    float_integrity = extract_float_integrity(raw, suffix)
+    sections = extract_sections(content)
+    reverse_outline = extract_section_blocks(content, suffix)
+    float_integrity = extract_float_integrity(content, suffix)
+    anonymity_risks = extract_anonymity_risks(raw) if anonymous else []
+    project_integrity = (
+        extract_latex_project_integrity(raw, base_dir, content)
+        if suffix.lower() == ".tex"
+        else extract_latex_project_integrity("", None)
+    )
 
     strong_claims: dict[str, dict[str, Any]] = {}
     for label, regex in STRONG_CLAIMS.items():
@@ -238,7 +383,7 @@ def analyze(raw: str, suffix: str, max_excerpts: int = 2) -> dict[str, Any]:
         warnings.append("No explicit RQ marker was detected; this may be intentional.")
     if strong_claims and not evidence_counts:
         warnings.append("Strong-claim terms were detected but no common evidence markers were found.")
-    todo_count = len(TODO_PATTERN.findall(raw))
+    todo_count = len(TODO_PATTERN.findall(content))
     if todo_count:
         warnings.append(f"Detected {todo_count} unfinished-text marker(s).")
     if float_integrity["missing_label_count"]:
@@ -262,11 +407,23 @@ def analyze(raw: str, suffix: str, max_excerpts: int = 2) -> dict[str, Any]:
     empty_openings = [item["section"] for item in reverse_outline if not item["opening_move"]]
     if empty_openings:
         warnings.append("Sections with no detectable prose opening: " + ", ".join(empty_openings))
+    for key, label in (
+        ("missing_inputs", "Missing LaTeX inputs"),
+        ("missing_graphics", "Missing graphics"),
+        ("missing_bibliographies", "Missing bibliography files"),
+        ("undefined_citation_keys", "Citation keys absent from detected bibliography"),
+    ):
+        if project_integrity[key]:
+            warnings.append(f"{label}: " + ", ".join(project_integrity[key]))
+    if anonymity_risks:
+        warnings.append(
+            f"Detected {len(anonymity_risks)} potential anonymity leak type(s); review manually."
+        )
 
     return {
-        "schema_version": "0.2.0",
+        "schema_version": "0.3.0",
         "summary": {
-            "characters": len(raw),
+            "characters": len(content),
             "approx_words": len(re.findall(r"\b\w+\b", text)),
             "sections_detected": len(sections),
             "unfinished_markers": todo_count,
@@ -279,6 +436,8 @@ def analyze(raw: str, suffix: str, max_excerpts: int = 2) -> dict[str, Any]:
         "evidence_marker_counts": evidence_counts,
         "section_vocabulary": dict(section_tokens.most_common(12)),
         "figure_table_integrity": float_integrity,
+        "latex_project_integrity": project_integrity,
+        "anonymity_check": {"enabled": anonymous, "risks": anonymity_risks},
         "warnings": warnings,
         "interpretation_note": (
             "These are deterministic review leads. Absence or presence of a marker does not establish quality."
@@ -337,6 +496,30 @@ def markdown_report(path: Path, result: dict[str, Any]) -> str:
             + (", ".join(integrity["undefined_float_references"]) or "None"),
         ]
     )
+    project = result["latex_project_integrity"]
+    if project["checked"]:
+        lines.extend(
+            [
+                "",
+                "## LaTeX Project Integrity",
+                "",
+                "- Missing inputs: " + (", ".join(project["missing_inputs"]) or "None"),
+                "- Missing graphics: " + (", ".join(project["missing_graphics"]) or "None"),
+                "- Missing bibliography files: "
+                + (", ".join(project["missing_bibliographies"]) or "None"),
+                "- Undefined citation keys: "
+                + (", ".join(project["undefined_citation_keys"]) or "None"),
+            ]
+        )
+    anonymity = result["anonymity_check"]
+    if anonymity["enabled"]:
+        lines.extend(["", "## Anonymization Warnings", ""])
+        if anonymity["risks"]:
+            for risk in anonymity["risks"]:
+                snippet = risk["snippet"].replace("`", "'")
+                lines.append(f"- Line {risk['line']}, {risk['type']}: `{snippet}`")
+        else:
+            lines.append("- No common leak patterns detected. Manual review is still required.")
     lines.extend(["", "## Review Leads", ""])
     lines.extend(f"- {item}" for item in result["warnings"] or ["No structural warnings detected."])
     lines.extend(["", f"> {result['interpretation_note']}", ""])
@@ -345,10 +528,34 @@ def markdown_report(path: Path, result: dict[str, Any]) -> str:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("manuscript", type=Path, help="Path to a .md, .tex, or .txt manuscript")
+    parser.add_argument("manuscript", type=Path, help="Path to a .docx, .md, .tex, or .txt manuscript")
     parser.add_argument("--format", choices=("markdown", "json"), default="markdown")
     parser.add_argument("--max-excerpts", type=int, default=2)
+    parser.add_argument("--anonymous", action="store_true", help="Report common identity-leak patterns")
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="Exit 1 on deterministic integrity defects; semantic warnings do not fail",
+    )
     return parser
+
+
+def strict_issue_count(result: dict[str, Any]) -> int:
+    summary = result["summary"]
+    floats = result["figure_table_integrity"]
+    project = result["latex_project_integrity"]
+    anonymity = result["anonymity_check"]
+    return (
+        summary["unfinished_markers"]
+        + floats["missing_label_count"]
+        + floats["missing_caption_count"]
+        + len(floats["undefined_float_references"])
+        + len(project["missing_inputs"])
+        + len(project["missing_graphics"])
+        + len(project["missing_bibliographies"])
+        + len(project["undefined_citation_keys"])
+        + len(anonymity["risks"])
+    )
 
 
 def main() -> int:
@@ -356,12 +563,22 @@ def main() -> int:
     if args.max_excerpts < 1:
         raise SystemExit("--max-excerpts must be at least 1")
     raw = read_manuscript(args.manuscript)
-    result = analyze(raw, args.manuscript.suffix, args.max_excerpts)
+    semantic_raw = (
+        expand_latex_inputs(args.manuscript) if args.manuscript.suffix.lower() == ".tex" else None
+    )
+    result = analyze(
+        raw,
+        args.manuscript.suffix,
+        args.max_excerpts,
+        anonymous=args.anonymous,
+        base_dir=args.manuscript.resolve().parent,
+        semantic_raw=semantic_raw,
+    )
     if args.format == "json":
         print(json.dumps(result, ensure_ascii=False, indent=2))
     else:
         print(markdown_report(args.manuscript, result))
-    return 0
+    return 1 if args.strict and strict_issue_count(result) else 0
 
 
 if __name__ == "__main__":

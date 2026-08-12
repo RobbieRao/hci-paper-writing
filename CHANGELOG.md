@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.3.0 - 2026-08-12
+
+- Added DOCX input, optional anonymization warnings, local LaTeX dependency and
+  citation-key checks, and strict CI behavior for deterministic defects.
+- Added an ordered project lifecycle with recorded, non-skippable stage
+  transitions and a cold-resume handoff file.
+- Added source ownership, author-endorsement, permission, and evidence tracking
+  for integrating chats, meetings, email, reviewer text, and notes.
+- Separated contribution form, research area, research tradition, and venue;
+  made secondary contribution forms carry their own evidence requirements.
+- Added HCI-specific novelty, positioning, contribution-noun, and non-defensive
+  writing protocols.
+- Expanded the deterministic test suite from 8 to 15 tests.
+
 ## 0.2.0 - 2026-08-10
 
 - Added a safe `.hci-paper/` workspace initializer with persistent claim,

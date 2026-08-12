@@ -10,6 +10,9 @@ project's methodological range without collapsing HCI into one review tradition.
 - a deterministic check with unit tests;
 - a synthetic reviewer-panel or rebuttal case with stable concern IDs;
 - a figure/text, terminology, or numeric-consistency fixture;
+- a DOCX, anonymization, LaTeX dependency, or citation-integrity fixture;
+- a source-integration case that distinguishes speaker, endorsement, evidence,
+  and permission without exposing private material;
 - a current official venue-policy source;
 - an accessibility or privacy improvement;
 - a clearer output contract or reproducible example.

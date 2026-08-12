@@ -10,7 +10,7 @@
   <a href="https://github.com/RobbieRao/hci-paper-writing/actions/workflows/ci.yml"><img src="https://github.com/RobbieRao/hci-paper-writing/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-34d399.svg" alt="MIT License"></a>
   <a href="skills/hci-paper-writing/SKILL.md"><img src="https://img.shields.io/badge/Agent%20Skill-open%20standard-8b5cf6.svg" alt="Agent Skill"></a>
-  <img src="https://img.shields.io/badge/version-0.2.0-60a5fa.svg" alt="Version 0.2.0">
+  <img src="https://img.shields.io/badge/version-0.3.0-60a5fa.svg" alt="Version 0.3.0">
   <img src="https://img.shields.io/badge/preflight-local%20%26%20read--only-22d3ee.svg" alt="Local and read-only preflight">
   <img src="https://img.shields.io/badge/benchmark-in%20development-f59e0b.svg" alt="Benchmark in development">
 </p>
@@ -54,7 +54,7 @@ The same skill also handles paper planning, section revision, study reporting,
 interaction figures, LLM-system reporting, privacy checks, and current venue
 policies.
 
-### New in the current open-source release
+### New in v0.3.0
 
 | Capability | Why it matters |
 |---|---|
@@ -62,9 +62,17 @@ policies.
 | **HCI reviewer panel** | Contribution, method-tradition, and reader/venue lenses are collected before meta-review, with disagreement preserved |
 | **Closed-loop rebuttal ledger** | Every response promise points to a manuscript change and a verification step |
 | **Machine-readable consistency audit** | Reverse outline, RQs, strong claims, unfinished text, and LaTeX figure/table integrity are available as Markdown or JSON |
+| **Stage gates that cannot be skipped silently** | A paper moves from framing to study-ready, evidence-frozen, claim-locked, review, and submission with a recorded rationale |
+| **Source and endorsement ledger** | Chat, meeting, email, reviewer, and coauthor material keeps its speaker, permission, evidence, and author-endorsement status |
+| **DOCX and submission-integrity checks** | The local audit now covers DOCX, anonymity leaks, LaTeX inputs, graphics, bibliographies, and citation keys |
 
 This is not a grammar wrapper with an HCI prompt pasted on top. The workflow is
 built around HCI's different contribution types and research traditions.
+
+It also keeps four decisions separate: what the contribution is, which research
+area it belongs to, how knowledge is produced, and where the paper will be
+submitted. A human-AI paper is not automatically a systems paper; a CHI paper is
+not automatically an experiment.
 
 ## 30-second install
 
@@ -111,7 +119,8 @@ Use $hci-paper-writing in hci-init mode for this project, then run hci-panel.
 Run the deterministic local scanner before semantic review:
 
 ```bash
-python3 skills/hci-paper-writing/scripts/manuscript_audit.py paper.tex
+python3 skills/hci-paper-writing/scripts/manuscript_audit.py paper.tex \
+  --anonymous --strict
 ```
 
 It detects:
@@ -122,11 +131,14 @@ It detects:
 - common study, ethics, and limitations markers;
 - a reverse outline from each section's opening move;
 - LaTeX figure/table definitions, references, captions, and orphaned labels;
+- LaTeX inputs, graphics, bibliography files, and citation-key resolution;
+- common anonymity leaks such as author metadata, email, identifying URLs, and acknowledgments;
 - unfinished text such as `TODO`, `TBD`, and `FIXME`.
 
 The scanner uses only the Python standard library. It is read-only and makes
 **zero network requests**. Its output is a set of review leads, not a paper
-quality score.
+quality score. It accepts `.docx`, `.md`, `.tex`, and `.txt` files. Strict mode
+fails only on deterministic integrity defects, not on debatable semantic advice.
 
 Add `--format json` when you want stable, machine-readable output for an agent
 pipeline or benchmark harness.
@@ -162,13 +174,43 @@ python3 skills/hci-paper-writing/scripts/project_workspace.py \
 ```
 
 This creates `.hci-paper/` with a context file and separate ledgers for claims,
-figures, reviewer comments, revisions, and verified venue policies. It also
+sources and endorsement, figures, reviewer comments, revisions, and verified venue policies. It also
 creates `runs/` for comparable audit reports. The initializer has no external
 dependencies, makes no network requests, and refuses to overwrite an existing
 workspace.
 
 Use `--dry-run` to inspect the plan first, or `--json` to integrate it into
 another tool.
+
+The workspace carries an ordered lifecycle:
+
+```text
+framing -> study-ready -> evidence-frozen -> claim-locked -> drafted -> reviewed
+-> response-ready -> submission-ready
+```
+
+Advance one checked gate at a time:
+
+```bash
+python3 skills/hci-paper-writing/scripts/project_workspace.py /path/to/paper \
+  --advance study-ready --note "RQs, ethics, and study plan reviewed"
+```
+
+The script prevents silent stage-skipping. It does not pretend that a state file
+can certify research quality; the evidence note and underlying artifacts remain
+reviewable.
+
+## Integrate notes without stealing their claims
+
+`hci-integrate` handles chats, emails, meeting transcripts, reviewer comments,
+and lab notes. It first records who proposed each idea, whether the author
+endorsed it, what evidence supports it, and whether it may be used. Tentative or
+rejected ideas stay out of the manuscript unless the author adopts them.
+
+`hci-positioning` separately checks whether the paper establishes importance,
+states a defensible unresolved question, names the smallest honest novelty
+delta, and chooses a contribution noun whose review contract the evidence can
+actually satisfy.
 
 ## From reviewer concern to verified change
 
@@ -240,6 +282,7 @@ skills/hci-paper-writing/
 └── references/
     ├── contribution-types.md
     ├── evidence-grounding.md
+    ├── novelty-and-positioning.md
     ├── workflows.md
     ├── method-lenses.md
     ├── study-evidence.md
@@ -248,6 +291,7 @@ skills/hci-paper-writing/
     ├── reviewer-panel.md
     ├── rebuttal-and-revision.md
     ├── project-workspace.md
+    ├── source-integration.md
     ├── llm-systems.md
     └── policy-and-privacy.md
 ```
@@ -275,6 +319,10 @@ skills/hci-paper-writing/
 - [x] Reverse outline and LaTeX figure/table consistency checks
 - [x] Role-separated HCI reviewer panel and meta-review protocol
 - [x] Reviewer-comment, rebuttal, revision, and verification loop
+- [x] DOCX, anonymity, LaTeX dependency, bibliography, and citation-key checks
+- [x] Ordered paper lifecycle with non-skippable stage transitions
+- [x] Source ownership, endorsement, permission, and evidence tracking
+- [x] Four-axis contribution form, research area, tradition, and venue model
 - [ ] HCI Paper Coach Benchmark: five-year CHI embedding analysis
 - [ ] Rights-cleared accepted/rejected submissions, reviews, and rebuttals
 - [ ] Public benchmark release with versioned splits, annotations, and data cards

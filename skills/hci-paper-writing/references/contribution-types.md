@@ -3,6 +3,21 @@
 Choose the primary type before evaluating prose. Hybrid papers may have a
 secondary type, but should not present every project activity as a contribution.
 
+## Keep Four Axes Separate
+
+Record four different decisions instead of collapsing them into one label:
+
+| Axis | Question | Examples |
+|---|---|---|
+| Contribution form | What reusable thing does the paper add? | empirical account, artifact, method, theory, dataset |
+| Research area | What domain or community is involved? | accessibility, human-AI interaction, health, CSCW |
+| Research tradition | How is knowledge produced? | controlled experiment, qualitative fieldwork, research through design, systems building |
+| Venue and track | Where and under which review culture is it submitted? | CHI Papers, UIST Papers, CSCW journal track |
+
+The area does not determine the method, and the venue does not determine the
+contribution. Apply current venue rules separately from research-strength
+judgment.
+
 | Type | Core promise | Typical evidence |
 |---|---|---|
 | Empirical understanding | Explain people, practices, contexts, relationships, or interaction | Transparent sampling and method, credible analysis, situated findings, HCI implications |
@@ -32,3 +47,13 @@ secondary type, but should not present every project activity as a contribution.
 
 Treat a claim with no evidence path as an aspiration, not a contribution.
 
+## Make Hybrid Papers Executable
+
+For a hybrid paper, choose one primary and at most one or two secondary forms.
+The primary form sets the thesis and section arc. A secondary form adds its own
+evidence requirements and reviewer questions; it is not just another label.
+
+When standards overlap, use the stricter claim boundary. For example, an
+artifact plus empirical paper must satisfy both technical/interaction evidence
+for the artifact and method-appropriate evidence for claims about people. Do not
+let one strong component compensate for an unsupported claim in the other.

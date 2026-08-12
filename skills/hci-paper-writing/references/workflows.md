@@ -4,7 +4,8 @@
 
 1. Reconstruct the paper in one sentence: problem, intervention or inquiry,
    evidence, and HCI value.
-2. Assign a primary contribution type.
+2. Record contribution form, research area, research tradition, and venue/track
+   separately; assign a primary and optional secondary contribution form.
 3. Extract explicit and implicit claims.
 4. Build the claim-evidence matrix.
 5. Test title-contribution-evidence-discussion alignment.
@@ -19,6 +20,8 @@ Use this output:
 ## Contribution Diagnosis
 - Primary:
 - Secondary:
+- Research area:
+- Research tradition:
 - Why:
 
 ## Claim-Evidence Matrix
@@ -95,4 +98,3 @@ Before drafting prose, produce:
 - claim-evidence matrix;
 - section-to-claim map;
 - fatal risks and evidence still needed.
-
