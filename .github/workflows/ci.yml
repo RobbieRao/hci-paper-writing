@@ -11,8 +11,8 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.11"
       - name: Validate skill package
@@ -21,4 +21,3 @@ jobs:
         run: make test
       - name: Run synthetic manuscript preflight
         run: python3 skills/hci-paper-writing/scripts/manuscript_audit.py examples/synthetic-paper.md --format json
-
