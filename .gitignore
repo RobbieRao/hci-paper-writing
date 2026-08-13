@@ -6,3 +6,43 @@ __pycache__/
 dist/
 build/
 
+# Private runtimes, unpublished manuscripts, and local credentials
+.private/
+.private-*/
+.hci-paper/
+.env
+.env.*
+!.env.example
+*.local
+*.local.*
+
+# Machine-learning artifacts must stay outside this public repository
+models/
+weights/
+adapter/
+adapters/
+checkpoints/
+*.safetensors
+*.ckpt
+*.pt
+*.pth
+*.onnx
+*.gguf
+
+# Generated retrieval and training artifacts
+embeddings/
+indexes/
+vector_store/
+wandb/
+mlruns/
+*.faiss
+*.index
+*.npy
+*.npz
+*.arrow
+*.parquet
+*.sqlite
+*.db
+*.pkl
+*.pickle
+*.log

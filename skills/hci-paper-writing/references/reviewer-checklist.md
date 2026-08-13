@@ -41,3 +41,7 @@ For every criticism, provide:
 Do not invent missing content, demand fashionable methods without claim-based
 justification, or convert personal preference into a venue requirement.
 
+Treat heuristic reviewer or literature scores only as ways to select questions
+for inspection. Do not use a composite score as a verdict, reward common methods
+or large samples independent of the claims, or translate historical frequency
+into likely acceptance.

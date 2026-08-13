@@ -17,7 +17,11 @@ makes no network requests. The agent skill itself is instruction text. Data
 handling by the model or application running the skill is governed by that
 platform, not by this repository.
 
+`release_guard.py` rejects common credential, private-path, external-symlink,
+oversized-file, and local-artifact leaks from tracked release files. This check
+reduces accidental disclosure but does not replace keeping private assets and
+research infrastructure outside the repository.
+
 Users are responsible for confirming that they are authorized to process a
 manuscript and that their chosen AI platform satisfies applicable confidentiality
 and venue requirements.
-

@@ -63,6 +63,22 @@ Compare the strongest neighbors rather than a convenient set of distant papers:
 Mark each row `full text inspected`, `metadata only`, or `unverified`. Do not
 claim a delta from an abstract, snippet, or embedding neighbor alone.
 
+Build separate comparison sets for the problem, method, findings/contribution,
+and limitations. Search the same-problem/different-method and
+same-method/different-problem contrasts explicitly. Repeat the search with
+meaning-preserving wording variants and lower coverage confidence when their
+candidate sets are unstable.
+
+Use this compact positioning sentence only after source inspection:
+
+```text
+Like the closest work, this paper addresses X. It differs in Y. Y matters for
+HCI because Z. The manuscript supports that delta with E.
+```
+
+Dense neighborhoods demand a sharper delta but do not disprove novelty. Sparse
+neighborhoods may indicate vocabulary or coverage failure and do not prove it.
+
 ## Related Work as an Argument
 
 Organize by research conversation or mechanism. Each subsection should:

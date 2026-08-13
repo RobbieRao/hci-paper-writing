@@ -10,7 +10,7 @@
   <a href="https://github.com/RobbieRao/hci-paper-writing/actions/workflows/ci.yml"><img src="https://github.com/RobbieRao/hci-paper-writing/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-34d399.svg" alt="MIT License"></a>
   <a href="skills/hci-paper-writing/SKILL.md"><img src="https://img.shields.io/badge/Agent%20Skill-open%20standard-8b5cf6.svg" alt="Agent Skill"></a>
-  <img src="https://img.shields.io/badge/version-0.3.0-60a5fa.svg" alt="版本 0.3.0">
+  <img src="https://img.shields.io/badge/version-0.4.0-60a5fa.svg" alt="版本 0.4.0">
   <img src="https://img.shields.io/badge/preflight-local%20%26%20read--only-22d3ee.svg" alt="本地只读预检">
   <img src="https://img.shields.io/badge/benchmark-%E6%AD%A3%E5%9C%A8%E5%BC%80%E5%8F%91-f59e0b.svg" alt="Benchmark 正在开发">
 </p>
@@ -48,10 +48,16 @@ Design 各有自己的评价标准，因此 Skill 会选择相应的 review lens
 同一个 Skill 也支持论文规划、章节修改、用户研究报告、interaction figure、
 LLM-integrated system、隐私检查和投稿政策核验。
 
-### v0.3.0 新增能力
+### v0.4.0 重点能力
 
 | 能力 | 为什么重要 |
 |---|---|
+| **CHI 2022–2026 趋势图谱** | 看清哪些 HCI 对话快速升温、持续成熟、剧烈波动，或在 CHI 扩张中失去相对份额 |
+| **CHI 2027 情景预测** | 给出八个带置信度和反证信号的方向，不伪造“选题中稿率排行榜” |
+| **分面化 closest-work 分析** | 分开比较 problem、contribution、method、findings 与 limitations，不再相信一个笼统的邻近论文列表 |
+| **Threat-set 对照** | 在写 novelty delta 前，主动寻找同问题/不同方法与同方法/不同问题的工作 |
+| **搜索稳定性检查** | 用等义改写和中英文检索暴露 literature coverage 不稳定的情况，避免过早下 positioning 结论 |
+| **Release 隐私门禁** | CI 检查 tracked release files 中常见的 credential、私有路径、外部 symlink、大文件与本地 artifact |
 | **持久化 `.hci-paper/` 工作区** | Claims、figures、reviewer comments、政策核验与修改承诺可以跨 session 保留 |
 | **HCI reviewer panel** | Contribution、method tradition、reader/venue 三个 lens 先分别审阅，再做保留分歧的 meta-review |
 | **Rebuttal 闭环账本** | 每个 response promise 都对应 manuscript change 与 verification |
@@ -157,6 +163,31 @@ Strict mode 只会因确定性的 integrity defect 失败，不会因有争议�
 任何真实参与者或伦理审批信息。
 </details>
 
+## 近五年 CHI 到底变了什么？
+
+最短的结论是：CHI 正从“AI 能完成某个任务”的通用 prototype，转向 agency、专业
+实践、治理、照护、教育、身份、核验与失败处理等更难的人机问题。
+
+| 快速变化的研究对话 | 本快照论文数，2022 → 2026 | 最应该避免的拥挤默认贡献 |
+|---|---:|---|
+| Chatbot agency、人格与 self-concept | 6 → 79 | 再做一个一次性 chatbot usability study |
+| 生成式 AI 在专业创意实践中的部署 | 0 → 80 | 只说“AI 提升创意”，不研究作者身份、控制权、provenance 或真实工作流 |
+| LLM 事实核验、人格与内容评估 | 2 → 89 | 只报模型 accuracy，不研究人如何核验或形成依赖 |
+| AI 叙事共创、儿童创作与 XR 表达 | 5 → 66 | 没有发展阶段、具身、文化或安全机制的通用故事生成器 |
+| AI 治理、组织采纳与责任实践 | 9 → 63 | 没有 decision rights、accountability 或部署证据的态度问卷 |
+
+CHI 2027 的高置信度情景包括：negotiated AI agency、situated deployment、
+epistemic interaction（provenance、不确定性与核验）以及多方后果。中等置信度情景
+包括具身/空间生成式交互、长期 AI 关系、作为方法与治理问题的 accessibility，以及
+AI 介入研究实践。
+
+阅读完整双语图谱：
+[简体中文](skills/hci-paper-writing/references/chi-trends-2022-2026.zh-CN.md) ·
+[English](skills/hci-paper-writing/references/chi-trends-2022-2026.md)
+
+这些是 proceedings 趋势，不是投稿或中稿预测。图谱会区分论文原始数量增长与年度
+份额增长，并明确什么证据可能推翻每项判断。
+
 ## 给每篇论文一份可持续的记忆
 
 在已有论文目录中初始化本地工作区：
@@ -258,9 +289,12 @@ skills/hci-paper-writing/
 ├── scripts/
 │   ├── manuscript_audit.py          # 本地确定性预检
 │   ├── project_workspace.py         # 安全的持久化论文状态初始化器
+│   ├── release_guard.py             # 阻止私有 artifact 进入 release
 │   └── validate_skill.py            # 零依赖结构校验
 └── references/
     ├── contribution-types.md
+    ├── chi-trends-2022-2026.md
+    ├── chi-trends-2022-2026.zh-CN.md
     ├── evidence-grounding.md
     ├── novelty-and-positioning.md
     ├── workflows.md
@@ -300,19 +334,23 @@ skills/hci-paper-writing/
 - [x] 带不可跳级 transition 的论文 lifecycle
 - [x] Source ownership、endorsement、permission 与 evidence tracking
 - [x] Contribution form、research area、tradition 与 venue 四轴模型
-- [ ] HCI Paper Coach Benchmark：近五年 CHI 论文 embedding 分析
+- [x] 双语 CHI 2022–2026 趋势图谱与 CHI 2027 情景预测
+- [x] 分面化 threat-set 分析与双语搜索稳定性检查
+- [x] 公开 release 隐私门禁
+- [ ] HCI Paper Coach Benchmark：可复现发布近五年 CHI 分析
 - [ ] 经权利确认的接收/拒稿投稿、reviews 与 rebuttals
 - [ ] 带版本化数据切分、annotations 与 data cards 的公开 benchmark
 - [ ] 正文、figures 与 tables 的数字和术语一致性检查
 - [ ] CSCW、DIS、UIST、accessibility 与 health HCI 专项包
+- [ ] 中英文双语报告模板
 - [ ] 跨 manuscript version 的 reviewer-feedback 纵向对比
 
 <a id="hci-paper-coach-benchmark正在开发"></a>
 
 ## Benchmark 正在开发
 
-我们正在准备一套开放、可复现、按 HCI 方法传统评价论文反馈的 benchmark。
-首版会把三类数据分开报告：
+双语的 2022–2026 趋势图谱现在已经可以使用。底层可复现的 benchmark package
+仍在开发；它会按 HCI 方法传统评价论文反馈，并把三类数据分开报告：
 
 1. 近五年 CHI 论文语料，用于 embedding 辅助的 contribution、method、topic
    与 subcommunity 分析。发布时会说明准确的覆盖范围、检索参数、来源链接和已知

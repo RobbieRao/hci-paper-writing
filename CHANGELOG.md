@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.4.0 - 2026-08-13
+
+- Added a bilingual CHI 2022–2026 trend atlas covering rapidly growing,
+  persistent, volatile, and declining-share topics.
+- Added confidence-calibrated CHI 2027 scenarios for agency, situated AI
+  deployment, epistemic interaction, multi-party effects, embodied generation,
+  longitudinal relationships, and accessibility.
+- Added facet-aware closest-work analysis across problem, contribution,
+  method, findings, and limitations, including explicit contrast cases.
+- Added search-stability checks so one wording or language variant cannot
+  silently become a literature-coverage or novelty conclusion.
+- Added rules that separate topic growth from overall conference expansion and
+  prevent trend signals from becoming acceptance predictions.
+- Added a tracked-file release guard for credentials, private paths, external
+  symlinks, large files, and common local artifact formats.
+- Expanded the deterministic test suite from 15 to 22 tests.
+
 ## 0.3.0 - 2026-08-12
 
 - Added DOCX input, optional anonymization warnings, local LaTeX dependency and

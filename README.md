@@ -10,7 +10,7 @@
   <a href="https://github.com/RobbieRao/hci-paper-writing/actions/workflows/ci.yml"><img src="https://github.com/RobbieRao/hci-paper-writing/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-34d399.svg" alt="MIT License"></a>
   <a href="skills/hci-paper-writing/SKILL.md"><img src="https://img.shields.io/badge/Agent%20Skill-open%20standard-8b5cf6.svg" alt="Agent Skill"></a>
-  <img src="https://img.shields.io/badge/version-0.3.0-60a5fa.svg" alt="Version 0.3.0">
+  <img src="https://img.shields.io/badge/version-0.4.0-60a5fa.svg" alt="Version 0.4.0">
   <img src="https://img.shields.io/badge/preflight-local%20%26%20read--only-22d3ee.svg" alt="Local and read-only preflight">
   <img src="https://img.shields.io/badge/benchmark-in%20development-f59e0b.svg" alt="Benchmark in development">
 </p>
@@ -54,10 +54,16 @@ The same skill also handles paper planning, section revision, study reporting,
 interaction figures, LLM-system reporting, privacy checks, and current venue
 policies.
 
-### New in v0.3.0
+### Highlights in v0.4.0
 
 | Capability | Why it matters |
 |---|---|
+| **CHI 2022–2026 trend atlas** | See which HCI conversations accelerated, stayed durable, became volatile, or lost relative share as the conference expanded |
+| **CHI 2027 scenario forecast** | Eight confidence-calibrated directions—with counter-signals—not a fake acceptance-probability leaderboard |
+| **Facet-aware closest-work analysis** | Compare problem, contribution, method, findings, and limitations separately instead of trusting one generic neighbor list |
+| **Threat-set comparison** | Surface same-problem/different-method and same-method/different-problem work before writing the novelty delta |
+| **Search-stability check** | Meaning-preserving and bilingual wording variants reveal when literature coverage is too unstable for a strong positioning claim |
+| **Release privacy guard** | CI checks tracked release files for common credentials, private paths, external symlinks, large files, and local artifacts |
 | **Persistent `.hci-paper/` workspace** | Claims, figures, reviewer comments, policy checks, and revision promises survive across sessions |
 | **HCI reviewer panel** | Contribution, method-tradition, and reader/venue lenses are collected before meta-review, with disagreement preserved |
 | **Closed-loop rebuttal ledger** | Every response promise points to a manuscript change and a verification step |
@@ -163,6 +169,34 @@ pipeline or benchmark harness.
 
 Try it on the intentionally synthetic [example paper](examples/synthetic-paper.md).
 </details>
+
+## What changed across five years of CHI?
+
+The short version: CHI is moving beyond generic “AI can do X” prototypes toward
+harder questions about agency, professional practice, governance, care,
+education, identity, verification, and failure.
+
+| Fast-moving conversation | Indexed papers, 2022 → 2026 | The crowded default to avoid |
+|---|---:|---|
+| Chatbot agency, personality, and self-concept | 6 → 79 | Another one-session chatbot usability study |
+| Generative AI in professional creative practice | 0 → 80 | “AI improves creativity” without authorship, control, provenance, or workflow evidence |
+| LLM fact-checking, personality, and content evaluation | 2 → 89 | Model accuracy without studying human verification or reliance |
+| AI narrative co-creation, children, and XR storytelling | 5 → 66 | A generic story generator without developmental, embodied, cultural, or safety mechanisms |
+| AI governance, organizational adoption, and responsibility | 9 → 63 | Attitude surveys without decision rights, accountability, or deployment evidence |
+
+Our higher-confidence CHI 2027 scenarios are negotiated AI agency, situated
+deployment, epistemic interaction (provenance, uncertainty, verification), and
+multi-party consequences. Medium-confidence scenarios include embodied/spatial
+generation, longitudinal AI relationships, accessibility as method and
+governance, and AI-mediated research practice.
+
+Read the full bilingual atlas:
+[English](skills/hci-paper-writing/references/chi-trends-2022-2026.md) ·
+[简体中文](skills/hci-paper-writing/references/chi-trends-2022-2026.zh-CN.md)
+
+These are proceedings trends, not submission or acceptance predictions. The
+atlas distinguishes raw paper growth from growth in annual share and says what
+evidence would falsify each forecast.
 
 ## Give each paper a memory
 
@@ -278,9 +312,12 @@ skills/hci-paper-writing/
 ├── scripts/
 │   ├── manuscript_audit.py          # Local deterministic preflight
 │   ├── project_workspace.py         # Safe persistent paper-state initializer
+│   ├── release_guard.py             # Block private artifacts from releases
 │   └── validate_skill.py            # Zero-dependency package validator
 └── references/
     ├── contribution-types.md
+    ├── chi-trends-2022-2026.md
+    ├── chi-trends-2022-2026.zh-CN.md
     ├── evidence-grounding.md
     ├── novelty-and-positioning.md
     ├── workflows.md
@@ -315,6 +352,7 @@ skills/hci-paper-writing/
 - [x] Local Markdown/LaTeX/text preflight
 - [x] Qualitative, quantitative, design, systems, field, and mixed-method lenses
 - [x] Privacy and live-policy guardrails
+- [x] English / Simplified Chinese README
 - [x] Persistent per-paper workspace and machine-readable ledgers
 - [x] Reverse outline and LaTeX figure/table consistency checks
 - [x] Role-separated HCI reviewer panel and meta-review protocol
@@ -323,7 +361,10 @@ skills/hci-paper-writing/
 - [x] Ordered paper lifecycle with non-skippable stage transitions
 - [x] Source ownership, endorsement, permission, and evidence tracking
 - [x] Four-axis contribution form, research area, tradition, and venue model
-- [ ] HCI Paper Coach Benchmark: five-year CHI embedding analysis
+- [x] Bilingual CHI 2022–2026 trend atlas and CHI 2027 scenarios
+- [x] Facet-aware threat-set analysis and bilingual search-stability checks
+- [x] Public-release privacy guard
+- [ ] HCI Paper Coach Benchmark: reproducible release of the five-year CHI analysis
 - [ ] Rights-cleared accepted/rejected submissions, reviews, and rebuttals
 - [ ] Public benchmark release with versioned splits, annotations, and data cards
 - [ ] Numeric and terminology consistency across text, figures, and tables
@@ -335,8 +376,9 @@ skills/hci-paper-writing/
 
 ## HCI Paper Coach Benchmark: in progress
 
-We are preparing an open, reproducible benchmark for method-aware HCI paper
-feedback. The first release will report three data sources separately:
+The bilingual 2022–2026 trend atlas is available now. We are still preparing
+the underlying reproducible benchmark package for method-aware HCI paper
+feedback. That release will report three data sources separately:
 
 1. A five-year CHI corpus for embedding-assisted analysis by contribution,
    method, topic, and subcommunity. The release will document exact coverage,

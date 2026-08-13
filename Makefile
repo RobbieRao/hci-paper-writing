@@ -1,13 +1,16 @@
 PYTHON ?= python3
 SKILL_DIR := skills/hci-paper-writing
 
-.PHONY: test validate audit init
+.PHONY: test validate guard audit init
 
 test:
 	$(PYTHON) -m unittest discover -s tests -v
 
 validate:
 	$(PYTHON) $(SKILL_DIR)/scripts/validate_skill.py $(SKILL_DIR)
+
+guard:
+	$(PYTHON) $(SKILL_DIR)/scripts/release_guard.py --root .
 
 audit:
 	@test -n "$(FILE)" || (echo "Usage: make audit FILE=path/to/paper.tex" && exit 2)

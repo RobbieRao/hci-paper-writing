@@ -53,6 +53,7 @@ git clone https://github.com/RobbieRao/hci-paper-writing.git
 cd hci-paper-writing
 make validate
 make test
+make guard
 ```
 
 To exercise the safe workspace initializer without writing files:
@@ -65,6 +66,11 @@ Keep the core `SKILL.md` concise. Put method-specific knowledge in a directly
 linked file under `references/`. Scripts must use deterministic behavior where
 possible and include tests. Avoid claims about acceptance-rate improvement unless
 they are backed by a public, reproducible evaluation.
+
+Before opening a pull request, run `make guard`. Keep unpublished manuscripts,
+review text, credentials, private research infrastructure, and generated local
+artifacts outside this repository. Contribute only public or clean-room
+synthetic regression cases, never raw private outputs.
 
 By contributing, you agree that your contribution is licensed under the MIT
 License of this repository.

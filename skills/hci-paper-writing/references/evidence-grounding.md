@@ -23,13 +23,22 @@ private CHI corpus unless the current runtime provides verifiable evidence.
    context, system, or venue practice.
 2. Record the corpus name, covered years, indexed fields, query, filters, result
    count, and access date.
-3. Use keyword or embedding retrieval to produce candidates.
-4. Inspect the source text before describing a candidate. Do not infer a paper's
-   contribution or findings from embedding proximity alone.
-5. Cite each factual source claim. Separate exact source content from the
+3. Search separately for the target's problem, claimed contribution, method,
+   findings, and limitations. Include same-problem/different-method and
+   same-method/different-problem contrasts.
+4. Repeat the search with meaning-preserving wording variants, including the
+   author's language and a bilingual variant when relevant. Record material
+   changes in the candidate set as a coverage limitation.
+5. Inspect the source text before describing a candidate. Do not infer a paper's
+   contribution or findings from search proximity alone.
+6. Cite each factual source claim. Separate exact source content from the
    analyst's synthesis.
-6. State missing years, inaccessible text, selection effects, and other coverage
+7. State missing years, inaccessible text, selection effects, and other coverage
    limitations.
+
+A whole-document ranking is not a substitute for these facet-specific
+comparisons. Give special attention to candidates that appear under only one
+facet or wording; disagreement is an inspection lead, not noise to hide.
 
 Use this compact provenance block:
 
@@ -73,6 +82,9 @@ Evaluate the skill on observable tasks rather than a single opaque score:
 | Prioritization | Are contribution-threatening issues ranked before prose polish? |
 | Policy accuracy | Are current rules verified from official sources? |
 | Calibration | Does it express uncertainty and corpus limitations honestly? |
+| Retrieval stability | Do meaning-preserving and bilingual queries recover a stable threat set? |
+| Threatening-neighbor recall | Does it surface the strongest same-problem, same-method, and same-contribution comparators? |
+| Similarity discipline | Does it avoid converting semantic proximity into novelty or quality judgment? |
 
 Report per-dimension results, annotator instructions, disagreements, data splits,
 and known limitations. Keep synthetic, public-paper, and author-consented data as

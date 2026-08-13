@@ -23,6 +23,10 @@ Never copy a prior year's numbers into a current report without verification.
 - Local scripts in this package read local files and make no network requests.
 - Warn users that model/application data handling is controlled by the platform
   running the skill, not by this Markdown package.
+- Keep private research infrastructure, generated artifacts, unpublished
+  manuscripts, reviews, and rebuttals outside this public repository.
+- Do not expose internal research services, endpoints, identities, or raw
+  outputs through public documentation or releases.
 
 ## Official Starting Points
 
@@ -32,4 +36,3 @@ Never copy a prior year's numbers into a current report without verification.
 - SIGCHI accessibility: https://sigchi.org/resources/guides-for-authors/accessibility/
 
 These links are starting points, not cached policy claims.
-

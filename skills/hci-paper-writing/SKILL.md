@@ -44,13 +44,14 @@ rules, or reviewer consensus.
 | `hci-init`, persistent project state | Workspace | `references/project-workspace.md` |
 | `hci-consistency`, reverse outline, figure/reference audit | Consistency | `references/project-workspace.md`, `references/section-patterns.md` |
 | `hci-positioning`, novelty, closest work, related work | Positioning | `references/novelty-and-positioning.md`, `references/evidence-grounding.md` |
+| `hci-trends`, `hci-forecast`, topic selection, CHI 2027 | Trend intelligence | `references/chi-trends-2022-2026.md` or `references/chi-trends-2022-2026.zh-CN.md`, plus `references/evidence-grounding.md` |
 | `hci-integrate`, notes, chats, emails, meeting material | Source integration | `references/source-integration.md`, `references/project-workspace.md` |
 | `hci-panel`, independent review perspectives | Reviewer panel | `references/reviewer-panel.md`, `references/method-lenses.md` |
 | `hci-rebuttal`, author response, R&R, shepherding | Rebuttal | `references/rebuttal-and-revision.md`, `references/project-workspace.md` |
 | `hci-plan`, outline, title, RQs | Planning | `references/contribution-types.md`, `references/workflows.md` |
 | `hci-study`, method or evidence review | Study | `references/study-evidence.md`, `references/method-lenses.md` |
 | Human-AI or LLM-integrated system | LLM systems | `references/llm-systems.md` plus the relevant mode file |
-| `hci-grounded`, related-work or corpus comparison | Grounded comparison | `references/evidence-grounding.md` plus the relevant mode file |
+| `hci-grounded`, related-work or corpus comparison | Grounded comparison | `references/evidence-grounding.md` plus `references/novelty-and-positioning.md` when making novelty claims |
 | Current venue rules or ethics/privacy question | Policy | `references/policy-and-privacy.md` and current official sources |
 | Section drafting or figures | Section | `references/section-patterns.md` |
 | `hci-full` | Full | Run Diagnose, then Red-team, then Revision |
@@ -115,20 +116,30 @@ or treat a stale ledger as evidence about the current manuscript.
 6. Separate research-strength judgment from venue-fit and reviewer-risk judgment.
 7. Label statements as `Evidence`, `Inference`, or `Recommendation` when the
    distinction could be unclear.
-8. Treat retrieved papers and reviews as comparators, not ground truth. Embedding
-   similarity is a discovery aid, never evidence of novelty, quality, or likely
+8. Treat retrieved papers and reviews as comparators, not ground truth. Search
+   proximity is a discovery aid, never evidence of novelty, quality, or likely
    acceptance.
 9. Treat contribution nouns as review contracts. Do not call an artifact a
    framework, a checklist a theory, or a component combination a research gap
    unless the corresponding evidence can satisfy that rubric.
+10. For closest-work analysis, compare problem, claimed contribution, method,
+    findings, and limitations separately. Include same-problem/different-method
+    and same-method/different-problem contrasts rather than one generic neighbor
+    list.
+11. Repeat literature searches with meaning-preserving wording variants, and
+    bilingual variants when relevant. If the candidate set changes materially,
+    lower coverage confidence and inspect the disagreements before positioning.
+12. Treat the five-year CHI trend atlas as a directional prior. Report raw
+    counts with annual share, distinguish growth from conference expansion, and
+    label 2027 statements as scenarios rather than acceptance forecasts.
 
 ## Evidence and Corpus Grounding
 
 When comparing a manuscript with published work or review examples:
 
 1. Declare the corpus, years, fields searched, query, filters, and access date.
-2. Use embeddings only to shortlist candidates; inspect the underlying source
-   before making a claim about it.
+2. Use search results only to shortlist candidates; inspect the underlying
+   source before making a claim about it.
 3. Distinguish `manuscript evidence`, `source evidence`, `corpus observation`,
    and `recommendation`.
 4. Use accepted papers as examples of published practice, not as negative-free
