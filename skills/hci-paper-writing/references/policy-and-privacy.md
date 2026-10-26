@@ -27,6 +27,16 @@ Never copy a prior year's numbers into a current report without verification.
   manuscripts, reviews, and rebuttals outside this public repository.
 - Do not expose internal research services, endpoints, identities, or raw
   outputs through public documentation or releases.
+- Treat collection of private review text for a corpus, model training, or a
+  benchmark as a distinct use that needs its own authorization. Account access
+  and removal of names do not establish permission to distribute the material.
+- When private reflection informs general coaching experience, publish only
+  independently explainable checks. Exclude quotations, identifying paraphrases,
+  paper-specific facts, scores, committee discussion, and source-to-rule maps.
+  Do not advertise a private-review dataset or evaluation that was not performed.
+- Check both the current process page and dedicated policy updates. When they
+  disagree, report the discrepancy instead of silently choosing one; retain
+  the source and access date for any advice that depends on the distinction.
 
 ## Official Starting Points
 

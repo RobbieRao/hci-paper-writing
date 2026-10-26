@@ -53,10 +53,14 @@ rules, or reviewer consensus.
 | Human-AI or LLM-integrated system | LLM systems | `references/llm-systems.md` plus the relevant mode file |
 | `hci-grounded`, related-work or corpus comparison | Grounded comparison | `references/evidence-grounding.md` plus `references/novelty-and-positioning.md` when making novelty claims |
 | Current venue rules or ethics/privacy question | Policy | `references/policy-and-privacy.md` and current official sources |
+| CHI 2027 review standards, recommendation rehearsal, or reviewer disagreement | Calibration | `references/chi-2027-review-calibration.md` plus the relevant review or revision mode |
 | Section drafting or figures | Section | `references/section-patterns.md` |
 | `hci-full` | Full | Run Diagnose, then Red-team, then Revision |
 
 Load only the referenced files needed for the selected mode.
+
+During red-teaming, add `references/study-evidence.md` when a consequential claim
+depends on study outcomes, numerical consistency, or a comparator choice.
 
 ## Intake Contract
 
@@ -180,6 +184,11 @@ killer concern. Do not invent a numerical acceptance probability.
 For `hci-panel`, use `references/reviewer-panel.md`: collect role-separated
 reviews before synthesis, preserve disagreement, and report whether independence
 was real or simulated.
+
+For CHI 2027, add `references/chi-2027-review-calibration.md`. Relate each
+decision-changing concern to a contribution claim and a feasible repair. If
+recommendation rehearsal is requested, use the verified external-review labels
+and explain what unresolved evidence separates adjacent judgments.
 
 ### Revision
 

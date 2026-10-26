@@ -41,3 +41,17 @@ Check why methods are combined, where integration occurs, how disagreements are
 handled, and whether the combined evidence supports a claim unavailable to either
 method alone.
 
+## Reviews, Taxonomies, and Conceptual Frameworks
+
+Check the search and selection boundary, unit of analysis, category definitions,
+ambiguous cases, and how the synthesis goes beyond organizing examples. A
+research gap must be supported within the declared coverage; a category's rarity
+is not by itself a research opportunity. Check whether apparent co-occurrence
+follows from how categories were defined rather than an independent finding.
+
+Evaluate a framework through distinctions it enables, cases it clarifies, and
+comparisons with relevant alternatives. When a framework is named in prior work,
+ask whether the manuscript engages with it substantively before calling it
+missing. Match coding transparency and agreement requirements to the analytic
+tradition rather than applying one standard to every synthesis.
+

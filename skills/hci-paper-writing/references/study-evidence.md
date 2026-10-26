@@ -35,11 +35,42 @@ If a construct was not measured, use a narrower statement such as
 `participants reported`, `the observed task behavior suggests`, or `the themes
 indicate`.
 
+Trace the intended benefit through the actual task and outcome. A scenario that
+mentions a real-world activity does not establish that participants performed
+that activity. Distinguish a favorable impression, an observed action, and an
+improvement in task success. Choose the strongest claim that the study can
+actually support before proposing additional evidence.
+
+## Result Consistency
+
+For results central to the contribution, reconcile sample counts, exclusions,
+condition summaries, model specification, uncertainty, and the claims in prose.
+First check whether seemingly conflicting values refer to the same data subset,
+analysis version, estimand, and unit. Recompute an implied quantity only when its
+assumptions are known; state those assumptions alongside any discrepancy.
+
+Distinguish a reporting error from an unresolved analysis problem. Explain which
+conclusion would change if the result were corrected. A discrepancy calls for
+verification or clarification, not an unsupported allegation about the authors.
+
+## Comparison Choice
+
+Ask what the comparison actually isolates. If a proposed interface supplies more
+information, time, assistance, or feedback than its baseline, an observed
+difference may reflect those advantages rather than the claimed mechanism.
+Where incremental value is the claim, consider an information-matched or simpler
+alternative and explain what uncertainty that comparison would resolve. Do not
+require a baseline by habit when the research tradition or claim does not call
+for one.
+
 ## Human Evaluation of AI Systems
 
 - Match evaluators to the claim: domain experts for correctness, target users for
   use experience, and appropriately scoped raters for perception judgments.
 - Distinguish model performance from human experience.
+- Identify the independent unit: participants, tasks, items, generated outputs,
+  and repeated ratings answer different questions. Repeated judgment of the same
+  output does not measure variation across independently generated outputs.
 - Report assignment, interfaces, instructions, items, raters, agreement or
   uncertainty, attention checks where justified, and compensation.
 - Explain what `interpretation` means: mechanism, feature influence, user mental

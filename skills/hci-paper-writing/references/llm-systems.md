@@ -25,7 +25,16 @@ system. Verify current community guidance before treating any item as policy.
   claim.
 - Test meaningful variation, failure modes, and robustness rather than only best
   examples.
+- Separate generation variability from evaluation variability. Report independent
+  runs, tasks, outputs, and repeated ratings clearly; choose repetition to match
+  the reliability claim rather than imposing a universal run count.
 - Match human evaluators to the claim and distinguish preferences from correctness.
+- If an automated judge is used, establish its fitness for the evaluation task
+  against appropriately qualified human judgments or another defensible
+  reference. Inspect disagreements and comparator coverage. Treat shared-model
+  bias as a hypothesis to test, not an automatic explanation.
+- When generated content is claimed to preserve source meaning, intent, or
+  expertise, assess that fidelity separately from fluency and user preference.
 - Examine agency, delegation, accountability, uncertainty, and recovery from
   failure where relevant.
 

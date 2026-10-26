@@ -10,7 +10,7 @@
   <a href="https://github.com/RobbieRao/hci-paper-writing/actions/workflows/ci.yml"><img src="https://github.com/RobbieRao/hci-paper-writing/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-34d399.svg" alt="MIT License"></a>
   <a href="skills/hci-paper-writing/SKILL.md"><img src="https://img.shields.io/badge/Agent%20Skill-open%20standard-8b5cf6.svg" alt="Agent Skill"></a>
-  <img src="https://img.shields.io/badge/version-0.4.0-60a5fa.svg" alt="版本 0.4.0">
+  <img src="https://img.shields.io/badge/version-0.5.0-60a5fa.svg" alt="版本 0.5.0">
   <img src="https://img.shields.io/badge/preflight-local%20%26%20read--only-22d3ee.svg" alt="本地只读预检">
   <img src="https://img.shields.io/badge/benchmark-%E6%AD%A3%E5%9C%A8%E5%BC%80%E5%8F%91-f59e0b.svg" alt="Benchmark 正在开发">
 </p>
@@ -48,10 +48,24 @@ Design 各有自己的评价标准，因此 Skill 会选择相应的 review lens
 同一个 Skill 也支持论文规划、章节修改、用户研究报告、interaction figure、
 LLM-integrated system、隐私检查和投稿政策核验。
 
-### v0.4.0 重点能力
+### v0.5.0 新增：找到证据缺口，再决定怎么修
+
+新增的 [CHI 2027 审稿校准指南](skills/hci-paper-writing/references/chi-2027-review-calibration.md)
+把公开评审维度和推荐档位连接到具体修改计划。每条重大意见都会追问：缺什么证据、
+现有材料里有没有，以及需要做哪些工作才能解决。
+
+证据检查进一步覆盖：实际任务能否支持宣称的收益、结果在不同位置是否一致、比较
+条件隔离了什么，以及重复评分是否被当作独立观察。综述和框架论文也有针对纳入
+标准与分类边界的方法视角。Panel 会解释 reviewer 为什么分歧，以及什么修复能
+改变判断。另附三个[原创合成练习](skills/hci-paper-writing/assets/review-calibration-cases.md)
+说明工作流。公开内容只有抽象写作指导和原创练习，不包含私密 review 或投稿信息。
+
+### v0.5.0 重点能力
 
 | 能力 | 为什么重要 |
 |---|---|
+| **CHI 2027 审稿校准** | 用当前公开标准和推荐档位，说明一项贡献需要完成什么修复 |
+| **Claim 与 evidence 检查** | 核对任务与主张的对应、数字一致性、比较条件，以及独立评价单位 |
 | **CHI 2022–2026 趋势图谱** | 看清哪些 HCI 对话快速升温、持续成熟、剧烈波动，或在 CHI 扩张中失去相对份额 |
 | **CHI 2027 情景预测** | 给出八个带置信度和反证信号的方向，不伪造“选题中稿率排行榜” |
 | **分面化 closest-work 分析** | 分开比较 problem、contribution、method、findings 与 limitations，不再相信一个笼统的邻近论文列表 |
@@ -293,6 +307,7 @@ skills/hci-paper-writing/
 │   └── validate_skill.py            # 零依赖结构校验
 └── references/
     ├── contribution-types.md
+    ├── chi-2027-review-calibration.md
     ├── chi-trends-2022-2026.md
     ├── chi-trends-2022-2026.zh-CN.md
     ├── evidence-grounding.md
@@ -337,6 +352,8 @@ skills/hci-paper-writing/
 - [x] 双语 CHI 2022–2026 趋势图谱与 CHI 2027 情景预测
 - [x] 分面化 threat-set 分析与双语搜索稳定性检查
 - [x] 公开 release 隐私门禁
+- [x] CHI 2027 审稿校准与修订可行性判断
+- [x] 证据一致性、比较条件与综述方法检查
 - [ ] HCI Paper Coach Benchmark：可复现发布近五年 CHI 分析
 - [ ] 经权利确认的接收/拒稿投稿、reviews 与 rebuttals
 - [ ] 带版本化数据切分、annotations 与 data cards 的公开 benchmark

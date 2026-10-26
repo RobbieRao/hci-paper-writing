@@ -73,6 +73,12 @@ Then report:
 - missing evidence that prevents resolution;
 - the next three highest-leverage actions.
 
+Separate disagreements about the contribution, evidence, method standard, and
+repair feasibility. An identical concern can lead to different recommendations
+because readers expect different repairs. State that hinge rather than merely
+reporting who is more positive. For CHI 2027, use the public-source calibration
+reference linked from `SKILL.md`.
+
 Agreement is evidence that a reading is stable under this panel. It is not proof
 that the claim is true or that reviewers at the venue will agree.
 

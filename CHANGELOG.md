@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.5.0 - 2026-10-26
+
+- Updated CHI 2027 author-side review calibration against public guidance checked
+  on 2026-10-26, including five assessment dimensions and A/ARR/RR/RRX/X labels.
+- Added repair-feasibility analysis and a clearer account of reviewer
+  disagreement about contributions, evidence, method standards, and repairs.
+- Strengthened task-to-claim alignment, result consistency, comparison choice,
+  and the distinction between generated outputs and repeated judgments.
+- Added automated-judge calibration and source-fidelity checks for AI systems,
+  plus selection, category, and inference checks for reviews and frameworks.
+- Made criticism distinguish reporting gaps, validity problems, procedural
+  concerns, and the additional evidence needed for broader claims.
+- Documented the discrepancy between the general process page and the dedicated
+  announcement that the AI-assisted ADR rubric report is not used in CHI 2027.
+- Added three original synthetic calibration exercises. No confidential reviews
+  were added to the package or used as evaluation labels for this update.
+
 ## 0.4.0 - 2026-08-13
 
 - Added a bilingual CHI 2022–2026 trend atlas covering rapidly growing,

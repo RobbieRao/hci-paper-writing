@@ -10,7 +10,7 @@
   <a href="https://github.com/RobbieRao/hci-paper-writing/actions/workflows/ci.yml"><img src="https://github.com/RobbieRao/hci-paper-writing/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-34d399.svg" alt="MIT License"></a>
   <a href="skills/hci-paper-writing/SKILL.md"><img src="https://img.shields.io/badge/Agent%20Skill-open%20standard-8b5cf6.svg" alt="Agent Skill"></a>
-  <img src="https://img.shields.io/badge/version-0.4.0-60a5fa.svg" alt="Version 0.4.0">
+  <img src="https://img.shields.io/badge/version-0.5.0-60a5fa.svg" alt="Version 0.5.0">
   <img src="https://img.shields.io/badge/preflight-local%20%26%20read--only-22d3ee.svg" alt="Local and read-only preflight">
   <img src="https://img.shields.io/badge/benchmark-in%20development-f59e0b.svg" alt="Benchmark in development">
 </p>
@@ -54,10 +54,29 @@ The same skill also handles paper planning, section revision, study reporting,
 interaction figures, LLM-system reporting, privacy checks, and current venue
 policies.
 
-### Highlights in v0.4.0
+### New in v0.5.0: Find the evidence gap, then plan the repair
+
+The [CHI 2027 calibration guide](skills/hci-paper-writing/references/chi-2027-review-calibration.md)
+connects the official assessment dimensions and recommendation choices to a
+concrete revision plan. For each major concern, the coach asks what evidence is
+missing, whether it already exists, and what work would resolve the issue.
+
+The evidence checks now examine whether the actual task supports the claimed
+benefit, whether reported results agree, what a comparison isolates, and whether
+repeated judgments have been confused with independent observations. Reviews
+and framework papers get their own lens for selection and category boundaries.
+The panel also explains why readers disagree and which repair would change
+their judgment. Three
+[synthetic exercises](skills/hci-paper-writing/assets/review-calibration-cases.md)
+illustrate the workflow. The release includes abstract coaching guidance and
+original exercises; it contains no private reviews or submission details.
+
+### Highlights in v0.5.0
 
 | Capability | Why it matters |
 |---|---|
+| **CHI 2027 review calibration** | Use the current public criteria and recommendation choices to explain the repair needed for a contribution |
+| **Claim and evidence checks** | Inspect task alignment, numerical consistency, comparator design, and independent evaluation units |
 | **CHI 2022–2026 trend atlas** | See which HCI conversations accelerated, stayed durable, became volatile, or lost relative share as the conference expanded |
 | **CHI 2027 scenario forecast** | Eight confidence-calibrated directions—with counter-signals—not a fake acceptance-probability leaderboard |
 | **Facet-aware closest-work analysis** | Compare problem, contribution, method, findings, and limitations separately instead of trusting one generic neighbor list |
@@ -316,6 +335,7 @@ skills/hci-paper-writing/
 │   └── validate_skill.py            # Zero-dependency package validator
 └── references/
     ├── contribution-types.md
+    ├── chi-2027-review-calibration.md
     ├── chi-trends-2022-2026.md
     ├── chi-trends-2022-2026.zh-CN.md
     ├── evidence-grounding.md
@@ -364,6 +384,8 @@ skills/hci-paper-writing/
 - [x] Bilingual CHI 2022–2026 trend atlas and CHI 2027 scenarios
 - [x] Facet-aware threat-set analysis and bilingual search-stability checks
 - [x] Public-release privacy guard
+- [x] CHI 2027 review calibration and repair-feasibility guidance
+- [x] Evidence consistency, comparison choice, and synthesis-method checks
 - [ ] HCI Paper Coach Benchmark: reproducible release of the five-year CHI analysis
 - [ ] Rights-cleared accepted/rejected submissions, reviews, and rebuttals
 - [ ] Public benchmark release with versioned splits, annotations, and data cards

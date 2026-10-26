@@ -38,6 +38,17 @@ For every criticism, provide:
 - minimum credible repair;
 - verification step.
 
+Separate a missing report from a demonstrated methodological defect, and separate
+both from a new study that would be needed to support a broader claim. Before
+escalating a concern, check the relevant section, appendix, and stated scope.
+State the assumptions behind a technical criticism so the author can answer it.
+
+Keep procedural compliance, academic validity, and suspected misconduct distinct.
+Report the specific inconsistency rather than inferring motive. For research
+ethics, check the applicable review or exemption process and its explanation;
+do not assume that all human-participant work requires the same institutional
+approval mechanism.
+
 Do not invent missing content, demand fashionable methods without claim-based
 justification, or convert personal preference into a venue requirement.
 

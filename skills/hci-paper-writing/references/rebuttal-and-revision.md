@@ -36,6 +36,12 @@ Do not claim that new evidence exists when it does not. Do not promise a new
 study, analysis, system feature, or policy-compliance change unless it is
 feasible in the actual response or revision window.
 
+Identify whether each repair uses existing evidence, reanalyzes available
+material, collects new evidence, or redesigns the contribution. A response that
+clarifies the prose can resolve a visibility problem; it cannot establish a
+previously untested benefit. State the dependencies that determine whether a
+substantive repair fits the available revision window.
+
 ## Closed Ledger
 
 Use the workspace ledgers or return this table:
